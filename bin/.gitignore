@@ -1,0 +1,5 @@
+*.pyc
+weave*
+happy*
+!*.py
+*.log

@@ -1,0 +1,7 @@
+*.pyc
+*.swp
+*.tar
+*.tar.gz
+*egg*
+dist
+build

@@ -1,0 +1,105 @@
+{
+    "link": {
+        "thread0": {
+            "fix_hw_addr": null, 
+            "network": "HomeThread", 
+            "network_end": "happythread0n", 
+            "node": "node0", 
+            "node_end": "happythread0o", 
+            "number": 0, 
+            "tap": true, 
+            "type": "thread"
+        }, 
+        "thread1": {
+            "fix_hw_addr": null, 
+            "network": "HomeThread", 
+            "network_end": "happythread1n", 
+            "node": "node1", 
+            "node_end": "happythread1o", 
+            "number": 1, 
+            "tap": true, 
+            "type": "thread"
+        }, 
+        "thread2": {
+            "fix_hw_addr": null, 
+            "network": "HomeThread", 
+            "network_end": "happythread2n", 
+            "node": "node2", 
+            "node_end": "happythread2o", 
+            "number": 2, 
+            "tap": true, 
+            "type": "thread"
+        }
+    }, 
+    "network": {
+        "HomeThread": {
+            "gateway": null, 
+            "interface": {
+                "thread0": {}, 
+                "thread1": {}, 
+                "thread2": {}
+            }, 
+            "prefix": {
+                "2001:0db8:0111:0001": {
+                    "mask": 64
+                }
+            }, 
+            "state": "UP", 
+            "type": "thread"
+        }
+    }, 
+    "node": {
+        "node0": {
+            "interface": {
+                "wpan0": {
+                    "ip": {
+                        "2001:0db8:0111:0001:c639:4aff:fe45:540a": {
+                            "mask": 64
+                        }
+                    }, 
+                    "link": "thread0", 
+                    "type": "thread"
+                }
+            }, 
+            "process": {}, 
+            "route": {}, 
+            "tmux": {}, 
+            "type": null
+        }, 
+        "node1": {
+            "interface": {
+                "wpan0": {
+                    "ip": {
+                        "2001:0db8:0111:0001:866c:45ff:fe59:462a": {
+                            "mask": 64
+                        }
+                    }, 
+                    "link": "thread1", 
+                    "type": "thread"
+                }
+            }, 
+            "process": {}, 
+            "route": {}, 
+            "tmux": {}, 
+            "type": null
+        }, 
+        "node2": {
+            "interface": {
+                "wpan0": {
+                    "ip": {
+                        "2001:0db8:0111:0001:9a83:0aff:fe1a:6d8d": {
+                            "mask": 64
+                        }
+                    }, 
+                    "link": "thread2", 
+                    "type": "thread"
+                }
+            }, 
+            "process": {}, 
+            "route": {}, 
+            "tmux": {}, 
+            "type": null
+        }
+    }, 
+    "weave": {}
+}

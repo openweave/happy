@@ -1,0 +1,34 @@
+{
+    "version": 1,
+    "disable_existing_loggers": false,
+    "formatters": {
+        "minimal": {
+            "format": "%(asctime)s [%(module)s] %(message)s"
+        },
+        "standard": {
+            "format": "%(asctime)s %(levelname)8s [%(module)s:%(funcName)s():%(lineno)s] %(message)s"
+        }
+    },
+    "handlers": {
+        "file": {
+            "level": "DEBUG",
+            "class" : "logging.handlers.RotatingFileHandler",
+            "formatter": "standard",
+            "filename":"%(log_directory)s/%(state_id)s_debug_log.txt",
+            "maxBytes": "5242880"
+        },
+        "stream": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "formatter": "minimal"
+        }
+    },
+    "loggers": {
+        "": {
+            "handlers": ["file", "stream"],
+            "level": "DEBUG",
+            "propagate": true
+        }
+    }
+}
+
