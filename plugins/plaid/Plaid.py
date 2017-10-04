@@ -47,6 +47,7 @@ options = {"quiet": True,
            "server_ip_address": None,
            "port": 9001,
            "num_clients": 1,
+           "max_time_at_high_speed_secs": None,
            "server_tag": "PLAID-SERVER",
            "network_prefix": "fd11:1111:1111:2222::"}
 
@@ -89,7 +90,7 @@ class Plaid(State):
     def __init__(self, opts):
         State.__init__(self)
 
-        self.min_supported_plaid_version = "1.1"
+        self.min_supported_plaid_version = "1.2"
 
         self.__dict__.update(opts)
 
@@ -232,6 +233,8 @@ class Plaid(State):
         cmd += " " + interface
         cmd += " " + str(self.port)
         cmd += " " + str(self.num_clients)
+        if self.max_time_at_high_speed_secs:
+            cmd += " --maxplaidtime " + str(self.max_time_at_high_speed_secs)
 
         options = happy.HappyProcessStart.option()
         options["quiet"] = self.quiet

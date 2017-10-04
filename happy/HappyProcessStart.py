@@ -138,7 +138,7 @@ class HappyProcessStart(HappyNode, HappyProcess):
 
     def __poll_for_output(self):
         poll_interval_sec = 0.01
-        max_poll_time_sec = 60
+        max_poll_time_sec = 180
         time_slept = 0
         tail = open(self.output_file, "r")
         self.logger.debug("[%s] HappyProcessStart: polling for output: %s" % (self.node_id, self.sync_on_output))
@@ -151,7 +151,7 @@ class HappyProcessStart(HappyNode, HappyProcess):
                 if (time_slept > max_poll_time_sec):
                     self.logger.debug("[%s] HappyProcessStart: can't find the output requested: %s" %
                                       (self.node_id, self.sync_on_output))
-                    self.exit()
+                    raise RuntimeError("Can't find the output requested")
 
             elif self.sync_on_output in line:
                 self.logger.debug("[%s] HappyProcessStart: found output: %s in %s secs" %
