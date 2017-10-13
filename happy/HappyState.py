@@ -32,12 +32,6 @@ from happy.State import State
 import happy.HappyNodeStatus
 import happy.HappyNetworkStatus
 
-# TODO:PLUGIN We should avoid calling plugin code directly from Happy.
-# However, this is an exception. It is used here to display state info for
-# the Weave plugin. In the future, if plugin code resides in a separate repo,
-# we'll have to remove this from here. We might still want to implement way
-# to display state information for all plugins as part of 'happy-state' output.
-import plugins.weave.Weave as Weave
 
 try:
     import networkx as nx
@@ -169,10 +163,6 @@ class HappyState(State):
         nodes.run()
 
         print
-
-        # TODO:PLUGIN code; see comment at 'import'
-        weave = Weave.Weave()
-        weave.printState()
 
     def __print_json_state(self):
         if self.json:

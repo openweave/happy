@@ -58,10 +58,6 @@ import happy.HappyStateLoad
 import happy.HappyStateUnload
 import happy.Traceroute
 import happy.HappyNodeTcpReset
-import plugins.weave.WeaveFabricAdd as WeaveFabricAdd
-import plugins.weave.WeaveFabricDelete as WeaveFabricDelete
-import plugins.weave.WeaveNetworkGateway as WeaveNetworkGateway
-import plugins.weave.WeaveNodeConfigure as WeaveNodeConfigure
 
 
 class HappyTopologyMgr(object):
@@ -389,36 +385,3 @@ class HappyTopologyMgr(object):
         options['duration'] = duration
         cmd = happy.HappyNodeTcpReset.HappyNodeTcpReset(options)
         cmd.start()
-
-    def WeaveFabricAdd(self, fabric_id=None, quiet=False):
-        options = WeaveFabricAdd.option()
-        options["quiet"] = quiet
-        options["fabric_id"] = fabric_id
-
-        cmd = WeaveFabricAdd.WeaveFabricAdd(options)
-        cmd.start()
-
-    def WeaveFabricDelete(self, fabric_id=None, quiet=False):
-        options = WeaveFabricDelete.option()
-        options["quiet"] = quiet
-        options["fabric_id"] = fabric_id
-        cmd = WeaveFabricDelete.WeaveFabricDelete(options)
-        cmd.start()
-
-    def WeaveNetworkGateway(self, network_id=None, add=False, delete=False, gateway=None, quiet=False):
-        options = WeaveNetworkGateway.option()
-        options["quiet"] = quiet
-        options["network_id"] = network_id
-        options["add"] = add
-        options["delete"] = delete
-        options["gateway"] = gateway
-
-        cmd = WeaveNetworkGateway.WeaveNetworkGateway(options)
-        cmd.start()
-
-    def WeaveNodeConfigure(self, opts=None):
-        options = WeaveNodeConfigure.option()
-        options.update(opts)
-
-        cmd = WeaveNodeConfigure.WeaveNodeConfigure(options)
-        cmd.run()

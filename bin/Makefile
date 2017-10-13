@@ -25,16 +25,9 @@ link:
 		$(SUDO) cp $$f $(DEST)/"$${f%.*}"; \
 		$(SUDO) chmod o+rx $(DEST)/"$${f%.*}"; \
 	done
-	for f in weave-*.py; do \
-		$(SUDO) cp $$f $(DEST)/"$${f%.*}"; \
-		$(SUDO) chmod o+rx $(DEST)/"$${f%.*}"; \
-	done
 
 unlink:
 	for f in happy-*.py; do \
-		$(SUDO) rm -f $(DEST)/"$${f%.*}"; \
-	done
-	for f in weave-*.py; do \
 		$(SUDO) rm -f $(DEST)/"$${f%.*}"; \
 	done
 

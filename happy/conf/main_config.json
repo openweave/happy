@@ -1,6 +1,6 @@
 {
     "configuration_file":"~/.happy_conf.json",
-    "log_directory":"/tmp",
+    "log_directory":"/tmp/happy_logs",
     "log_level_file": "DEBUG",
     "log_level_console": "INFO",
     "default_state":"happy",
