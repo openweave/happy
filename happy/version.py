@@ -17,4 +17,4 @@
 #    limitations under the License.
 #
 
-__version__ = '1.1.35'
+__version__ = '1.1.36'
