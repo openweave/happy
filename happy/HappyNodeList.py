@@ -30,7 +30,7 @@ from happy.Utils import *
 from happy.HappyNode import HappyNode
 
 options = {}
-options["quiet"] = False
+options["quiet"] = True
 
 
 def option():
@@ -59,7 +59,9 @@ class HappyNodeList(HappyNode):
         self.nodes.sort()
 
         for n in self.nodes:
-            self.logger.info(n)
+            print n
+            if not self.quiet:
+                self.logger.info(n)
 
     def __post_check(self):
         pass

@@ -32,7 +32,7 @@ from happy.Utils import *
 from happy.HappyNetwork import HappyNetwork
 
 options = {}
-options["quiet"] = False
+options["quiet"] = True
 
 
 def option():
@@ -60,7 +60,9 @@ class HappyNetworkList(HappyNetwork):
         self.networks = self.getNetworkIds()
 
         for n in self.networks:
-            self.logger.info(n)
+            print n
+            if not self.quiet:
+                self.logger.info(n)
 
     def __post_check(self):
         pass
