@@ -45,7 +45,7 @@ def option():
 
 class HappyNodeTmux(HappyNode):
     """
-    happy-node-shell [-h --help] [-q --quiet] [-i --id <NODE_NAME>]
+    happy-node-tmux [-h --help] [-q --quiet] [-i --id <NODE_NAME>]
              [-u --user <USER_NAME>] [-s --session <SESSION_NAME>]
              [-d --delete] [-a --attach] [-n --noattach]
     return:

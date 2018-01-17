@@ -56,7 +56,7 @@ class HappyNodeAdd(HappyNode):
         Creates a Linux Network Namespace called node01
 
     $ happy-node-add --ap --id home_router
-        Creates a happy virtual node called happy_routes. This node has type of 'access point'.
+        Creates a happy virtual node called home_router. This node has type of 'access point'.
 
     return:
         0    success

@@ -47,7 +47,7 @@ def option():
 
 class HappyProcessWait(HappyNode, HappyProcess):
     """
-    happy-process-wait blocks untill a given process is no longer running at a virtual node.
+    happy-process-wait blocks until a given process is no longer running at a virtual node.
 
     happy-process-wait [-h --help] [-q --quiet] [-i --id <NODE_NAME>]
         [-t --tag <DAEMON_NAME>]

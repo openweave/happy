@@ -44,13 +44,13 @@ def option():
 
 class HappyLinkAdd(HappyLink):
     """
-    happy-link-add creates a new link that can connect a vertual node to a network.
+    happy-link-add creates a new link that can connect a virtual node to a network.
 
     happy-link-add [-h --help] [-q --quiet] [-t --type <LINK_TYPE>] [-p --tap]
 
     Example:
-    $ happy-link-add thread
-        Creates an ip link called threadX where X is a number.
+    $ happy-link-add thread1
+        Creates an ip link called thread1.
 
     return:
         0    success

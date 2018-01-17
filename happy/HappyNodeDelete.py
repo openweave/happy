@@ -46,7 +46,7 @@ def option():
 
 class HappyNodeDelete(HappyNode):
     """
-    Deletes a virtual node. If node has any netork interfaces, those interfaces
+    Deletes a virtual node. If node has any network interfaces, those interfaces
     will be deleted as well.
 
     happy-node-delete [-h --help] [-q --quiet] [-i --id <NODE_NAME>]

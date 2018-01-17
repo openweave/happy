@@ -47,7 +47,7 @@ def option():
 
 class HappyProcessStop(HappyNode, HappyProcess):
     """
-    waeve-process-stop  ensures that a process is no longer running at a virtual node.
+    happy-process-stop ensures that a process is no longer running at a virtual node.
 
     happy-process-stop [-h --help] [-q --quiet] [-i --id <NODE_NAME>]
         [-t --tag <DAEMON_NAME>]

@@ -43,7 +43,7 @@ def option():
 
 class HappyNetworkState(HappyNetwork):
     """
-    happy-network-status [-h --help] [-q --quiet] [-i --id <NETWORK_NAME>]
+    happy-network-state [-h --help] [-q --quiet] [-i --id <NETWORK_NAME>]
                 [-u --up] [-d --down]
 
     return:

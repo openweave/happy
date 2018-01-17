@@ -39,7 +39,7 @@ def option():
 
 class HappyLinkList(HappyLink):
     """
-    happy-list-list [-h --help] [-q --quiet]
+    happy-link-list [-h --help] [-q --quiet]
 
     return:
         0    success

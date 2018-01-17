@@ -47,7 +47,7 @@ def option():
 
 class HappyNetworkAdd(HappyNetwork):
     """
-    happy-network-add creates a new ethernet bridge to represents one virtual network.
+    happy-network-add creates a new ethernet bridge to represent one virtual network.
 
     happy-network-add [-h --help] [-q --quiet] [-i --id <NETWORK_NAME>]
                       [-t --type <TYPE>]

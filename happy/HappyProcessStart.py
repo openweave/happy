@@ -53,14 +53,14 @@ def option():
 
 class HappyProcessStart(HappyNode, HappyProcess):
     """
-    happy-process-start starts running a process process within a virtual node.
+    happy-process-start starts running a process within a virtual node.
 
     happy-process-start [-h --help] [-q --quiet] [-i --id <NODE_NAME>]
         [-t --tag <DAEMON_NAME>]  [-s --strace] [-e --env <ENVIRONMENT>] <COMMAND>
 
     Example:
     $ happy-process-start node_01 ContinuousPing ping 127.0.0.1
-        Starts a process process within node_01 called ContinuousPing.
+        Starts a process within node_01 called ContinuousPing.
         This process calls `ping 127.0.0.1`.
 
     return:

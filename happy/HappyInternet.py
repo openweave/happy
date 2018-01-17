@@ -55,7 +55,7 @@ class HappyInternet(HappyNode, HappyNodeRoute):
 
     Example:
     $ happy-internet --node onhub --interface eth0 --isp eth --seed 249
-        virtual node onhub gets connected to Internet. Connection goes through host's eth0. The isp is is the name string for ISP,
+        virtual node onhub gets connected to Internet. Connection goes through host's eth0. The isp is the name string for ISP,
         seed is [1, 252]
 
     $ happy-internet -d --interface eth0 --isp eth --seed 249

@@ -55,8 +55,8 @@ class HappyNetworkAddress(HappyNetwork, HappyNode):
 
     Example:
     $ happy-network-address Home fd00:1:2:3::/64
-        Assignes network Home prefix fd00:1:2:3:: and mask 64. All nodes that are
-        already part of this network will get IP address on that prefix.
+        Assigns network Home prefix fd00:1:2:3:: and mask 64. All nodes that are
+        already part of this network will get an IP address with that prefix.
 
     return:
         0    success
