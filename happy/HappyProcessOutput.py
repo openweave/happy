@@ -50,7 +50,7 @@ class HappyProcessOutput(HappyNode):
     happy-process-output [-h --help] [-q --quiet] [-i --id <NODE_NAME>]
                          [-t --tag <DAEMON_NAME>]
 
-        -i --id     Required. Node on which the process is running. Find
+        -i --id     Optional. Node on which the process is running. Find
                     using happy-node-list or happy-state.
         -t --tag    Required. Name of the process.
 
@@ -73,18 +73,6 @@ class HappyProcessOutput(HappyNode):
         self.process_output = None
 
     def __pre_check(self):
-        # Check if the name of the node is given
-        if not self.node_id:
-            emsg = "Missing name of the virtual node."
-            self.logger.error("[localhost] HappyProcessOutput: %s" % (emsg))
-            self.RaiseError(emsg)
-
-        # Check if the name of new node is not a duplicate (that it does not already exists).
-        if not self._nodeExists():
-            emsg = "virtual node %s does not exist." % (self.node_id)
-            self.logger.error("[%s] HappyProcessOutput: %s" % (self.node_id, emsg))
-            self.RaiseError(emsg)
-
         # Check if the new process is given
         if not self.tag:
             emsg = "Missing name of the process to retrieve output from."
