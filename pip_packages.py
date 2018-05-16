@@ -40,7 +40,7 @@ required_packages = [
     'lockfile==0.12.2',
     'grpcio==1.3.5',
     'psutil==1.2.1',
-    'M2Crypto==0.29.0']
+    'M2Crypto==0.30.1']
 
 for package in required_packages:
     pip_install(package)
