@@ -43,14 +43,21 @@ def option():
 
 class Ping(HappyNode):
     """
-    happy-ping  calls ping/ping6 among virtual nodes.
+    Sends pings between virtual nodes. Uses ping for IPv4 and ping6 for IPv6.
 
-    happy-ping [-h --help] [-q --quiet] [-i --id <NODE_ID>] [-s --size <PING_SIZE>]
-                    [-d --destination <IP_ADDR> or <NODE_ID>] [-c --count <PING_COUNT>]
+    happy-ping [-h --help] [-q --quiet] [-i --id <NODE_NAME>]
+               [-d --destination (<IP_ADDR>|<NODE_NAME>)]
+               [-s --size <PING_SIZE>] [-c --count <PING_COUNT>]
+
+        -i --id           Source node.
+        -d --destination  Destination node, can be either the IP address or the
+                          node name.
+        -s --size         Size of the ping in bytes.
+        -c --count        Number of pings to send.
 
     Example:
-    $ happy-ping node_01 node_02
-        Sends ping on all networks that nodes 01 and 02 are together.
+    $ happy-ping ThreadNode BorderRouter
+        Sends a ping between the ThreadNode and BorderRouter nodes.
 
     return:
         0-100   percentage of the lost packets

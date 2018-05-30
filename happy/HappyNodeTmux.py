@@ -45,9 +45,32 @@ def option():
 
 class HappyNodeTmux(HappyNode):
     """
-    happy-node-tmux [-h --help] [-q --quiet] [-i --id <NODE_NAME>]
-             [-u --user <USER_NAME>] [-s --session <SESSION_NAME>]
-             [-d --delete] [-a --attach] [-n --noattach]
+    Manages TMUX sessions on virtual nodes.
+
+    happy-node-tmux [-h --help] [-q --quiet] [-d --delete] [-a --attach] [-n --noattach]
+                    [-i --id <NODE_NAME>] [-u --user <USER_NAME>] [-s --session <SESSION_NAME>]            
+
+        -d --delete     Delete an existing TMUX session.
+        -a --attach     Default. Attach to the TMUX session upon creation.
+        -n --noattach   Do not attach to the TMUX session upon creation.
+        -i --id         Required. Node to manage a TMUX session for. Find using happy-node-list
+                        or happy-state.
+        -u --user       User for the TMUX session. Default is root.
+        -s --session    Name of the TMUX session.
+
+    Note: Only one action is performed for this command. A TMUX session is either created
+          (--attach or --noattach) or deleted.
+    
+    Examples:
+    $ happy-node-tmux -n BorderRouter
+        Create a TMUX session on the BorderRouter node without attaching to it.
+
+    $ happy-node-tmux -a -i BorderRouter -s TestTmux
+        Create and attach to a TMUX session called TestTmux on the BorderRouter node.
+
+    $ happy-node-tmux -d BorderRouter
+        Delete all TMUX sessions on the BorderRouter node.
+
     return:
         0    success
         1    fail

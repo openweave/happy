@@ -45,10 +45,19 @@ def option():
 
 class HappyProcessOutput(HappyNode):
     """
-    happy-process-output  returns a process output.
+    Returns the output of a process running within a virtual node.
 
     happy-process-output [-h --help] [-q --quiet] [-i --id <NODE_NAME>]
-        [-t --tag <DAEMON_NAME>]
+                         [-t --tag <DAEMON_NAME>]
+
+        -i --id     Required. Node on which the process is running. Find
+                    using happy-node-list or happy-state.
+        -t --tag    Required. Name of the process.
+
+    Example:
+    $ happy-process-output BorderRouter ContinuousPing
+        Displays the output of the ContinuousPing process running on
+        the BorderRouter node.
 
     return:
         0    success

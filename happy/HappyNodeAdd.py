@@ -46,17 +46,25 @@ def option():
 
 class HappyNodeAdd(HappyNode):
     """
-    happy-node-add creates a new network namespace that represents one virtual node device.
+    Creates a new network namespace that represents one virtual node.
 
-    happy-node-add [-h --help] [-q --quiet] [-i --id <NODE_NAME>]
-        [-a --ap] [-s --service] [-l --local]
+    happy-node-add [-h --help] [-q --quiet] [-a --ap] [-s --service]
+                   [-l --local] [-i --id <NODE_NAME>]
 
-    Example:
-    $ happy-node-add node_01
-        Creates a Linux Network Namespace called node01
+        -a --ap         The node is considered an access point.
+        -s --service    The node is considered a cloud service.
+        -l --local      Default node type. The node is considered a local node.
+        -i --id         Required. Name of the node to create.
 
-    $ happy-node-add --ap --id home_router
-        Creates a happy virtual node called home_router. This node has type of 'access point'.
+    Note: A node cannot be more than one type. It is either ap, service,
+          or local.
+
+    Examples:
+    $ happy-node-add onhub
+        Creates a node called onhub.
+
+    $ happy-node-add --ap --id onhub
+        Creates a node called onhub that serves as an access point.
 
     return:
         0    success

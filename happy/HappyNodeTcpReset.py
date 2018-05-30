@@ -48,14 +48,24 @@ def option():
 
 class HappyNodeTcpReset(HappyNode):
     """
-    happy-node-tcp-reset provides tcpkill functionality to virtual nodes.
+    Provides tcpkill functionality to virtual nodes. Use this to test DoS attacks on a
+    Happy network by blocking TCP connections to specific nodes, interfaces, and ports.
 
-    happy-node-tcp-reset [-h --help] [-q --quiet] [-s --start [start_time]] [-d --duration [duration]]
-                         [-i --ips [source ip, dest ip]] [-i --id <NODE_NAME>] [-d --dstPort <dstPort>]
+    happy-node-tcp-reset [-h --help] [-q --quiet] [-i --id <NODE_NAME>] [--interface <IFACE>]
+                         [-s --start <START_TIME>] [-d --duration <DURATION>] [--ips <SOURCE_IP,DEST_IP>]
+                         [--dstPort <DEST_PORT>]
+
+        -i --id         Required. Target node to block connections for. Find using
+                        happy-node-list or happy-state.
+           --interface  Target node interface to block connections for.
+        -s --start      Time to initiate TCP block, in seconds from NOW
+        -d --duration   Time to maintain TCP block, in seconds from <START_TIME>
+           --ips        Source and destination IPs to block connections for.
+           --dstPort    Destination port to block connections for.
 
     Example:
-    $  happy-node-tcp-reset  --id BorderRouter --interface "wlan0"  --ips "107.22.61.55,10.0.1.2" --start "2" --duration 6
-    #  happy-node-tcp-reset --id BorderRouter --interface "wlan0"  --dstPort "11095" --start "2" --duration "20"
+    $ happy-node-tcp-reset --id BorderRouter --interface wlan0 --start 2 --duration 20 --dstPort 11095
+        Kills the TCP connection for the BorderRouter node's wlan0 interface for 18 seconds.
 
     return:
         0    success

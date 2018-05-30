@@ -47,15 +47,25 @@ def option():
 
 class HappyStateDelete(HappyHost):
     """
+    Deletes the current network topology state. This only delete nodes, networks, and
+    links found in the current state file.
+
     happy-state-delete [-h --help] [-q --quiet] [-f --force] [-a --all]
 
-    Example:
-    $ happy-state-delete --all --force
-        Deletes Happy state and other host network resources without asking for confirmation.
-        Very dangerous, be careful!
+        -f --force  Optional. Turns off all deletion confirmations. WARNING: We do not
+                    recommend using this option, as it could delete critical non-Happy host
+                    network resources.
+        -a --all    Optional. Deletes all network namespace and links on the host system.
+                    Asks for confirmation before deleting non-Happy network resources.
 
+    Examples:
     $ happy-state-delete
-        Only deletes nodes, links and networks that are found in the state file.
+        Preferred usage. Deletes the current state.
+
+    $ happy-state-delete -a
+        Use only if there's a networking issue that can't be resolved with 
+        happy-state-delete alone. Respond to deletion requests with "no" if you are
+        unsure whether the network resource should be deleted.
 
     return:
         0    success

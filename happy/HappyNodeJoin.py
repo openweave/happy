@@ -52,21 +52,33 @@ def option():
 
 class HappyNodeJoin(HappyLink, HappyNode, HappyNetwork):
     """
-    happy-node-join assignes a virtual node to a specific network.
+    Assigns a virtual node to a specific network.
 
     happy-node-join [-h --help] [-q --quiet] [-i --id <NODE_NAME>]
-                    [-n --network <NETWORK_NAME>] [-m --mac <HW_ADDR>] [-c --customizedeui64 <customized_eui64>]
-                    [-p --tap]
+                    [-n --network <NETWORK_NAME>] [-m --mac <HW_ADDR>]
+                    [-c --customizedeui64 <CUST_EUI64>] [-p --tap]
+
+        -i --id              Required. Node to be added to a network. Find using
+                             happy-node-list or happy-state.
+        -n --network         Required. Network to add the node to. Find using
+                             happy-network-list or happy-state.
+        -m --mac             The MAC hardware address for the node.
+        -c --customizedeui64 The EUI64 address for the node.
+        -p --tap             Configure the link between the node and the network as an
+                             L2 TAP device with a virtual bridge. Omit this parameter to
+                             default to an L3 TUN configuration for normal IP routing.
 
     Example:
-    $ happy-node-join node_01 Home
-        virtual node node_01 joins network called Home.
+    $ happy-node-join ThreadNode HomeThread
+        Adds the ThreadNode node to the HomeThread network.
 
-    $ happy-node-join -i node_02 -n HomeWiFi -m 5
-        virtual node node_02 joins network called HomeWiFi and get MAC HW address 00:00:00:00:00:05.
+    $ happy-node-join -i onhub -n HomeWiFi -m 5
+        Adds the onhub node to the HomeWiFi network with a MAC hardware address of
+        00:00:00:00:00:05.
 
-    $ happy-node-join -i node_02 -n HomeWiFi -c 00:00:00:00:00:00:00:05
-        virtual node node_02 joins network called HomeWiFi, eui64 address is 00:00:00:00:00:00:00:05.
+    $ happy-node-join -i onhub -n HomeWiFi -c 00:00:00:00:00:00:00:05
+        Adds the onhub node to the HomeWiFi network with an EUI64 address of
+        00:00:00:00:00:00:00:05.
 
     return:
         0    success

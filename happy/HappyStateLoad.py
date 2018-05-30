@@ -50,13 +50,16 @@ def option():
 
 class HappyStateLoad(State):
     """
-    happy-state-load loads virtual network topology from a file.
+    Loads a virtual network topology from a JSON file.
 
     happy-state-load [-h --help] [-q --quiet] [-f --file <JSON_FILE>]
 
+        -f --file   Required. A valid JSON file with the topology to load.
+
     Example:
-    $ happy-state-load <file>.json
-        Builds virtual network topology based on description specified in <file>.json.
+    $ happy-state-load mystate.json
+        Creates a virtual network topology based on the state described
+        in mystate.json.
 
     return:
         0    success

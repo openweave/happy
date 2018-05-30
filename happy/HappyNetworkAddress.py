@@ -48,15 +48,22 @@ def option():
 
 class HappyNetworkAddress(HappyNetwork, HappyNode):
     """
-    happy-network-address manages network prefixes.
+    Manages network prefixes for virtual networks.
 
-    happy-network-address [-h --help] [-q --quiet] [-i --id <NETWORK_NAME>]
-                      [-a --add] [-d --delete] [<ADDRESS>]
+    happy-network-address [-h --help] [-q --quiet] [-a --add] [-d --delete]
+                          [-i --id <NETWORK_NAME>] [<IP_ADDR>]
 
-    Example:
-    $ happy-network-address Home fd00:1:2:3::/64
-        Assigns network Home prefix fd00:1:2:3:: and mask 64. All nodes that are
-        already part of this network will get an IP address with that prefix.
+        -i --id     Network to manage network prefixes for. Find using
+                    happy-network-list or happy-state.
+
+    Examples:
+    $ happy-network-address HomeThread fd00:1:2:3::/64
+        Assigns the fd00:1:2:3::/64 prefix to the HomeThread network and assigns an IP
+        address to each node that is already part of that network.
+
+    $ happy-network-address -d HomeThread fd00:1:2:3::/64
+        Removes the fd00:1:2:3::/64 prefix from the HomeThread network and removes the
+        corresponding IP address from each node in that network.
 
     return:
         0    success

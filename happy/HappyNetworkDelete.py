@@ -22,7 +22,7 @@
 #       Implements HappyNetworkDelete class that removes virtual networks.
 #
 #       A virtual network is logical representation of a virtual ethernet
-#       bridge, thus deleting a weave network corresponds to deleting a bridge.
+#       bridge, thus deleting a virtual network corresponds to deleting a bridge.
 #
 
 import os
@@ -45,10 +45,19 @@ def option():
 
 class HappyNetworkDelete(HappyNetwork):
     """
-    Deletes a virtual network. If network has any interfaces, those interfaces
+    Deletes a virtual network. A virtual network is logical representation
+    of a virtual ethernet bridge, thus deleting a virtual network corresponds
+    to deleting a bridge. If the network has any interfaces, those interfaces
     will be deleted as well.
 
     happy-network-delete [-h --help] [-q --quiet] [-i --id <NETWORK_NAME>]
+
+        -i --id     Required. Network to delete. Find using happy-network-list
+                    or happy-state.
+
+    Example:
+    $ happy-network-delete HomeThread
+        Deletes the HomeThread network.
 
     return:
         0    success

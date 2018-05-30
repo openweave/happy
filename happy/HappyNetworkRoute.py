@@ -53,21 +53,39 @@ def option():
 
 class HappyNetworkRoute(HappyNetwork, HappyNode):
     """
-    happy-network-route manages network IP routes.
+    Manages virtual network IP routes.
 
-    happy-network-route [-h --help] [-q --quiet] [-i --id <NETWORK_NAME>]
-                      [-a --add] [-d --delete] [-t --to <ADDRESS>] [-v --via <ADDRESS>]
-                      [-p --prefix <ADDRESS>] [-s --isp <ISP>] [-e --seed <SEED>]
+    happy-network-route [-h --help] [-q --quiet] [-a --add] [-d --delete]
+                        [-i --id <NETWORK_NAME>] [-t --to (<IP_ADDR>|default)]
+                        [-v --via (<IP_ADDR>|<NODE_NAME>|<IFACE>)] [-p --prefix <IP_ADDR>]
+                        [-s --isp <ISP>] [-e --seed <SEED>]
 
-                  The <ADDRESS> in  --to  can be IP address or 'default'.
-                  The <ADDRESS> in  --via  can be IP address or <NODE_NAME>.
-                  The <ISP> in --current ethernet's provider
-                  The <SEED> in --priority can be the number <0-255> for the route table
-    Example:
-    $ happy-network-route Home default 2002:0:1:1::1
-        Network Home get default route through 2002:0:1:1::1 address.
-    $ happy-node-route node_01 default 2002:0:1:1::1 isp="ethernet" seed=100
-        Node node_01 get default route through 2002:0:1:1::1 address and also route via the ethernet_table
+        -i --id     Required. Network to add routes to. Find using happy-network-list or
+                    happy-state.
+        -t --to     Optional. Default value is 'default'. The destination address. Can be
+                    an IP address or 'default'. Use 'default' to ensure compatability of a
+                    saved Happy topology across different Linux hosts.
+        -v --via    The gateway of a target network, if the route spans multiple networks.
+                    Can be an IP address, <NODE_NAME>, or <INTERFACE>. Use <NODE_NAME> or
+                    <INTERFACE> to ensure compatability of a saved Happy topology across
+                    different Linux hosts.
+        -p --prefix Gateway route prefix. Required if the gateway has more than one IP
+                    address.
+        -s --isp    Optional. The <ISP> in --current ethernet's provider.
+        -e --seed   Optional. Route priority in the routing table. Range: 0-255
+
+    Examples:
+    $ happy-network-route -i HomeThread -t default -v BorderRouter -p 2001:db8:111:1::/64
+        Adds routes for all nodes in the HomeThread network to the default routes of all nodes
+        accessible via the 2001:db8:111:1::/64 prefix on the BorderRouter gateway.
+
+    $ happy-network-route HomeWiFi onhub -p 10.0.1.0
+        Adds routes for all nodes in the HomeWiFi network to the default routes of all nodes
+        accessible via the 10.0.1.0 prefix on the onhub gateway.
+
+    $ happy-network-route -d HomeWiFi onhub -p 10.0.1.0
+        Delete routes from all nodes in the HomeWiFi network to the default routes of all nodes
+        accessible via the 10.0.1.0 prefix on the onhub gateway.
 
     return:
         0    success

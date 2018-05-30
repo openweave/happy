@@ -45,10 +45,19 @@ def option():
 
 class HappyProcessStrace(HappyNode):
     """
-    happy-process-strace  returns a process strace.
+    Displays the output of a process strace.
 
     happy-process-strace [-h --help] [-q --quiet] [-i --id <NODE_NAME>]
-        [-t --tag <DAEMON_NAME>]
+                         [-t --tag <DAEMON_NAME>]
+
+        -i --id     Required. Node on which the process is running. Find using
+                    happy-node-list or happy-state.
+        -t --tag    Required. Name of the process.
+
+    Example:
+    $ happy-process-strace ThreadNode ContinuousPing
+        Displays the output of the strace for the ContinuousPing process
+        on the ThreadNode node.
 
     return:
         0    success

@@ -41,14 +41,21 @@ def option():
 
 class Traceroute(HappyNode):
     """
-    happy-traceroute  calls traceroute/traceroute6 between virtual nodes.
+    Calls traceroute between virtual nodes. Uses traceroute for IPv4 and traceroute6
+    for IPv6.
 
-    happy-traceroute [-h --help] [-q --quiet] [-i --id <NODE_ID>]
-                    [-d --destination <IP_ADDR> or <NODE_ID>]
+    happy-traceroute [-h --help] [-q --quiet] [-i --id <NODE_NAME>]
+                     [-d --destination (<IP_ADDR>|<NODE_NAME>)]
+
+        -i --id           Source node.
+        -d --destination  Destination, can be either the IP address or the node name.
 
     Example:
-    $ happy-traceroute node_01 node_02
-        Sends traceroute on all networks that nodes 01 and 02 are together.
+    $ happy-traceroute BorderRouter ThreadNode
+        Calls traceroute between the BorderRouter and ThreadNode nodes.
+
+    $ happy-traceroute BorderRouter 10.0.1.3
+        Calls traceroute between the BorderRouter node and 10.0.1.3.
 
     return:
         0    success

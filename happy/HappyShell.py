@@ -44,8 +44,25 @@ def option():
 
 class HappyShell(HappyNode):
     """
+    Logs the user into a virtual node so commands can be run directly in the node,
+    or runs commands as if the user is currently logged into the node.
+
     happy-shell [-h --help] [-q --quiet] [-i --id <NODE_NAME>] [-u --user]
                 [-c --command <COMMAND>]
+
+        -i --id         Required. Node to log into. Find using happy-node-list or
+                        happy-state.
+        -u --user       Optional. User to log into the node as.
+        -c --command    Optional. Run <COMMAND> in the node and view its output
+                        without directly logging in.
+
+    Examples:
+    $ happy-shell BorderRouter
+        Log into the BorderRouter node.
+
+    $ happy-shell BorderRouter ping -c2 10.0.1.3
+        Pings 10.0.1.3 twice from within the BorderRouter node and outputs the
+        results.
 
     return:
         0    success

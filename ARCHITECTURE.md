@@ -1,39 +1,39 @@
 Architecture
 ------------
 
-Happy models nodes, links and networks:
+Happy models the following:
 
-- nodes are network namespaces.  Processes comprising the node, run within a
+* Node — A Linux network namespace. Processes comprising the node run within a
   specified network namespace.
-
-- links are network interfaces.  Out of the box, Happy supports L3 (IP)
-  interfaces via the `veth` device, L2 interfaces via `tap` and offers the
-  ability to reach out to the internet via host's real network interfaces.
-
-- networks are namespaces with an Ethernet bridge running within them.
+* Link — A Linux network interface. Happy uses the veth network device to support
+  L3 (IP) interfaces and the tap network device to support L2 interfaces out of
+  the box.
+* Network — Linux network namespaces with an Ethernet bridge running within them.
 
 ### Implementation
 
 Happy is a collection of Python modules. Core Happy modules provide abstractions
 for:
 
-- managing happy node abstractions (adding/modifying/deleting a node, running a
-  set of processes within the node)
+* Managing node abstractions
+  * Adding, modifying, and deleting nodes
+  * Running a set of processes within the node
+* Managing links
+  * Adding, modifying, and deleting links
+  * Assigning links to a node and a network
+  * Assigning and modifying address assignments
+* Managing networks
+  * Creating, modifying, and destroying networks
+  * Network connectivity
+* Managing the overall state of the framework in a cohesive fashion
 
-- managing links (adding/modifying/deleting links, assigning links to the node
-  and to the network, assigning and modifying address assignments)
+Most of the abstractions implemented by Happy modules map into commands that 
+invoke Linux network tools.
 
-- managing networks (create/modify/destroy, manage connectivity)
-
-- managing the overall state of the framework in a cohesive fashion
-
-Most of the abstractions that are implemented by Happy modules map
-into commands that invoke Linux network tools.
-
-Happy also contains a set of `plugins`.  Plugins wrap a set of
-functionality related to a particular technology, for example,
-`plugins/weave` contain helpers that wrap various Weave applications
-for execution within Happy.
+Happy also contains a set of plug-ins found in `/plugins`. Plug-ins wrap a set
+of functionality related to a particular technology. For example,
+`/plugins/weave` contain helpers that wrap various Weave applications for
+execution within Happy.
 
 ### Shell commands & Classes
 

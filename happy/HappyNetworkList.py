@@ -41,6 +41,8 @@ def option():
 
 class HappyNetworkList(HappyNetwork):
     """
+    Displays a list of virtual networks.
+    
     happy-network-list [-h --help] [-q --quiet]
 
     return:

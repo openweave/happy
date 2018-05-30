@@ -47,10 +47,19 @@ def option():
 
 class HappyProcessWait(HappyNode, HappyProcess):
     """
-    happy-process-wait blocks until a given process is no longer running at a virtual node.
+    Waits for a process to finish execution on a virtual node.
 
     happy-process-wait [-h --help] [-q --quiet] [-i --id <NODE_NAME>]
-        [-t --tag <DAEMON_NAME>]
+                       [-t --tag <DAEMON_NAME>]
+
+        -i --id     Required. Node on which the process is running. Find
+                    using happy-node-list or happy-state.
+        -t --tag    Required. Name of the process.
+
+    Example:
+    $ happy-process-wait ThreadNode QuickPing
+        Prevents further Happy command execution on the ThreadNode node
+        until the QuickPing process has completed execution.
 
     return:
         0    success

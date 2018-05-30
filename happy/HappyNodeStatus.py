@@ -41,7 +41,19 @@ def option():
 
 class HappyNodeStatus(HappyNode):
     """
+    Displays virtual node information.
+
     happy-node-status [-h --help] [-q --quiet] [-i --id <NODE_NAME>]
+
+        -i --id     Node to display information for. Find using
+                    happy-node-list or happy-state.
+
+    Examples:
+    $ happy-node-status
+        Displays information for all nodes.
+
+    $ happy-node-status ThreadNode
+        Displays information for the ThreadNode node in JSON format.
 
     return:
         0    success

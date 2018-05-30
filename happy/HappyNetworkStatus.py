@@ -41,7 +41,19 @@ def option():
 
 class HappyNetworkStatus(HappyNetwork):
     """
+    Displays virtual network information.
+
     happy-network-status [-h --help] [-q --quiet] [-i --id <NETWORK_NAME>]
+
+        -i --id     Network to display information for. Find using
+                    happy-network-list or happy-state.
+
+    Examples:
+    $ happy-network-status
+        Displays information for all networks.
+
+    $ happy-network-status HomeThread
+        Displays information for the HomeThread network in JSON format.
 
     return:
         0    success

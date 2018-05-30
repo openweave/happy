@@ -46,14 +46,23 @@ def option():
 
 class HappyNodeAddress(HappyNode):
     """
-    happy-node-address manages virtual node IP addresses.
+    Manages virtual node IP addresses.
 
-    happy-node-address [-h --help] [-q --quiet] [-i --id <NODE_NAME>]
-                  [-e --interface <INTERFACE_ID>] [-a --add] [-d --delete] [<ADDRESS>]
+    happy-node-address [-h --help] [-q --quiet] [-a --add] [-d --delete]
+                       [-i --id <NODE_NAME>] [-e --interface <IFACE>] [<IP_ADDR>]
 
-    Example:
-    $ happy-node-address node_01 wpan0 fd00:0:1:1::1
-        Adds IP address fd00:0:1:1::1 to wpan0 interface in node_01.
+        -i --id         Required. Node to manage addresses for. Find using
+                        happy-node-list or happy-state.
+        -e --interface  Interface to bind the address to.
+
+    Examples:
+    $ happy-node-address BorderRouter wpan0 fd00:0:1:1::1
+        Adds an IP address of fd00:0:1:1::1 to the wpan0 interface of the
+        BorderRouter node.
+
+    $ happy-node-address -d BorderRouter wpan0 fd00:0:1:1::1
+        Deletes the IP address of fd00:0:1:1::1 from the wpan0 interface of the
+        BorderRouter node.
 
     return:
         0    success

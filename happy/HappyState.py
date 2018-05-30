@@ -62,39 +62,29 @@ def option():
 
 class HappyState(State):
     """
-    happy-state [-h --help] [-q --quiet] [-s --save <FILE_NAME>]
-                [-g --graph] [-l --logs] [-j --json] [-u --unlock] [-i --id] [-a --all]
+    Displays the state of the Happy network topology.
 
-    Example:
+    happy-state [-h --help] [-q --quiet] [-s --save <JSON_FILE>] [-g --graph]
+                [-l --logs] [-j --json] [-u --unlock] [-i --id] [-a --all]
+
+        -s --save   Saves the current network topology state in a JSON file.
+        -g --graph  Generates a network topology graph.
+        -l --logs   Display Happy run-time logs. Run in a separate terminal
+                    window to observe logs while using Happy.
+        -j --json   Display the current state in JSON format.
+        -u --unlock Force unlock the Happy state file (~/.happy_state.json).
+        -i --id     Displays all known state IDs.
+        -a --all    Displays the network topology state for all known states.
+
+    Examples:
     $ happy-state
-        Displays the network topology state.
+        Displays the current network topology state.
 
-    $ happy-state -a
-        Displays the network topology state for all known states.
-
-    $ happy-state -s <file>
-        Saves virtual network topology state in <file>.json
-
-    $ happy-state -g
-        Generates virtual network topology graph.
-
-    $ happy-state -g -s <file>
-        Generates virtual network topology graph and saves it in <file>.png .
-
-    $ happy-state -l
-        Shows run-time Happy logs.
+    $ happy-state -s mystate.json
+        Saves the current network topology state in mystate.json.
 
     $ happy-state -a -l
-        Shows run-time Happy logs for all known states.
-
-    $ happy-state -j
-        Shows state in JSON format.
-
-    $ happy-state -u
-        Forces to unlock Happy state file.
-
-    $ happy-state -i
-        Show state id(s).
+        Displays Happy run-time logs for all known states.
 
     return:
         0    success

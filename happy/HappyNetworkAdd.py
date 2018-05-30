@@ -47,16 +47,18 @@ def option():
 
 class HappyNetworkAdd(HappyNetwork):
     """
-    happy-network-add creates a new ethernet bridge to represent one virtual network.
+    Creates a new virtual ethernet bridge to represent a virtual network.
 
     happy-network-add [-h --help] [-q --quiet] [-i --id <NETWORK_NAME>]
-                      [-t --type <TYPE>]
+                      [-t --type (cellular|out-of-band|thread|wan|wifi)]
 
-                      TYPE : thread, wifi, wan, cellular, out-of-band
+        -i --id     Required. Name of the network to create. Find using
+                    happy-network-list or happy-state.
+        -t --type   Required. Type of network to create.
 
     Example:
-    $ happy-network-add Home thread
-        Creates a Thread network called Home
+    $ happy-network-add HomeThread thread
+        Creates a Thread network called HomeThread
 
     return:
         0    success

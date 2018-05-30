@@ -46,17 +46,22 @@ def option():
 
 class HappyNodeLeave(HappyNode, HappyNetwork):
     """
-    happy-node-leave removes a virtual node from a specific network or all networks.
+    Removes a virtual node from a specific network or all networks.
 
     happy-node-leave [-h --help] [-q --quiet] [-i --id <NODE_NAME>]
-                    [-n --network <NETWORK_NAME>]
+                     [-n --network <NETWORK_NAME>]
 
-    Example:
-    $ happy-node-leave node_01 Home
-        virtual node node_01 leaves network called Home.
+        -i --id         Required. Node to remove from a network. Find using
+                        happy-node-list or happy-state.
+        -n --network    Network to remove the node from. Find using
+                        happy-network-list or happy-state.
 
-    $ happy-node-leave node_01
-        virtual node node_01 leaves all networks.
+    Examples:
+    $ happy-node-leave ThreadNode HomeThread
+        Removes the ThreadNode node from the HomeThread network.
+
+    $ happy-node-leave ThreadNode
+        Removes the ThreadNode node from all networks.
 
     return:
         0    success

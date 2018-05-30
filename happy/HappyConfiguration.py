@@ -19,7 +19,7 @@
 
 ##
 #    @file
-#       Implements HappyConfiguration class that modifies user's configuration setup.
+#       Implements HappyConfiguration class that modifies a user's configuration setup.
 #
 
 import os
@@ -43,14 +43,24 @@ def option():
 
 class HappyConfiguration(State):
     """
-    happy-configuration modifies user's configuration setup.
+    Modifies a user's configuration setup.
 
-    happy-configuration [-h --help] [-q --quiet] [-c --config-type (main|log|user)] [-d --delete]
-        [-k --key <STRING>] [-v --value <STRING>]
+    happy-configuration [-h --help] [-q --quiet] [-d --delete] [-c --config-type (main|log|user)]
+                        [-k --key <STRING>] [-v --value <STRING>]
 
-    Example:
+        -c --config-type     main - Uses <path-to-happy>/happy/conf/main_config.json
+                             log  - Uses <path-to-happy>/happy/conf/log_config.json
+                             user - Default. Uses ~/.happy_conf.json
+        -k --key             Configuration key.
+        -v --value           Configuration key value.
+
+    Examples:
+
     $ happy-configuration weave_path /home/weave/build/x86_64-unknown-linux-gnu/src/test-apps/
-        Configures Happy to find weave test clients and servers at the given path
+        Configures Happy to find Weave test clients and servers at the given path.
+
+    $ happy-configuration -d weave_path
+        Removes the weave_path configuration key.
 
     return:
         0    success

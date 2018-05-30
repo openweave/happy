@@ -43,8 +43,22 @@ def option():
 
 class HappyNetworkState(HappyNetwork):
     """
-    happy-network-state [-h --help] [-q --quiet] [-i --id <NETWORK_NAME>]
-                [-u --up] [-d --down]
+    Changes or displays the state of a virtual network's interfaces.
+
+    happy-network-state [-h --help] [-q --quiet] [-u --up] [-d --down]
+                        [-i --id <NETWORK_NAME>]
+
+        -u --up     Bring up all interfaces on the specified network.
+        -d --down   Bring down all interfaces on the specified network.
+        -i --id     Required. Network to change or display the state of network
+                    interfaces. Find using happy-network-list or happy-state.
+    
+    Examples:
+    $ happy-network-state HomeThread
+        Displays the current state of the HomeThread network.
+
+    $ happy-network-state -d HomeThread
+        Brings down all HomeThread network interfaces.
 
     return:
         0    success

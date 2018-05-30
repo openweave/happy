@@ -44,14 +44,20 @@ def option():
 
 class HappyDNS(HappyNode):
     """
-    happy-dns provides DNS nameservers to virtual nodes.
+    Assigns DNS servers to virtual nodes.
 
     happy-dns [-h --help] [-q --quiet] [-a --add] [-d --delete]
-                [-i --id <NODE_NAME>] <DNS_LIST>
+              [-i --id <NODE_NAME>] <DNS_LIST>
 
-    Example:
-    $ happy-dns 111.222.333.444
-        assign to all virtual nodes DNS server 111.222.333.444
+        -i --id     Optional. Node to assign a DNS server to. Find
+                    using happy-link-list.
+
+    Examples:
+    $ happy-dns 8.8.8.8
+        Assign DNS server 8.8.8.8 to all virtual nodes.
+
+    $ happy-dns -d onhub 8.8.8.8
+        Removes DNS server 8.8.8.8 from the onhub node.
 
     return:
         0    success

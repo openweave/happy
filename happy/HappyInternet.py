@@ -19,7 +19,8 @@
 
 ##
 #    @file
-#       Implements HappyInternet class through which a virtual node joins the Internet managed by virtual ISP
+#       Implements HappyInternet class through which a virtual node connects to the
+#       internet through a virtual ISP.
 #
 #
 
@@ -48,18 +49,25 @@ def option():
 
 class HappyInternet(HappyNode, HappyNodeRoute):
     """
-    happy-internet connect a virtual node to the Internet managed by virtual ISP.
+    Connects a virtual node to the internet through a virtual ISP.
 
-    happy-internet [-h --help] [-q --quiet] [-n --node <NODE_NAME>]
-                    [-a --add] [-d --delete] [-f --interface <IFACE>] [-s --isp <ISP_ID>] [-e --seed <seed>]
+    happy-internet [-h --help] [-q --quiet] [-a --add] [-d --delete]
+                   [-n --node <NODE_NAME>] [-f --interface <IFACE>] [-s --isp <ISP>]
+                   [-e --seed <SEED>]
 
-    Example:
+        -d --delete     Disconnect the topology from the internet. Use the same
+                        configuration (interface, isp, seed) as when it was connected.
+        -f --interface  Interface that provides default internet connectivity to the host.
+        -s --isp        User-defined string to be used for the ISP name.
+        -e --seed       Seed value used in the host IP prefix of 172.16.<seed>.1
+                        Range: 1-252
+
+    Examples:
     $ happy-internet --node onhub --interface eth0 --isp eth --seed 249
-        virtual node onhub gets connected to Internet. Connection goes through host's eth0. The isp is the name string for ISP,
-        seed is [1, 252]
+        Connects virtual node onhub to the internet through the host's eth0 interface.
 
     $ happy-internet -d --interface eth0 --isp eth --seed 249
-        topology gets disconnected from the Internet.
+        Disconnects the topology from the internet.
 
     return:
         0    success

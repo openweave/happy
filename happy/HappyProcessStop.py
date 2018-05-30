@@ -47,10 +47,19 @@ def option():
 
 class HappyProcessStop(HappyNode, HappyProcess):
     """
-    happy-process-stop ensures that a process is no longer running at a virtual node.
+    Stops a process that is running in a virtual node.
 
     happy-process-stop [-h --help] [-q --quiet] [-i --id <NODE_NAME>]
-        [-t --tag <DAEMON_NAME>]
+                       [-t --tag <DAEMON_NAME>]
+
+        -i --id     Required. Node on which the process is running. Find
+                    using happy-node-list or happy-state.
+        -t --tag    Required. Name of the process.
+
+    Example:
+    $ happy-process-stop ThreadNode ContinuousPing
+        Stops execution of the ContinuousPing process on the ThreadNode
+        node.
 
     return:
         0    success

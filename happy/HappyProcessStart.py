@@ -53,15 +53,24 @@ def option():
 
 class HappyProcessStart(HappyNode, HappyProcess):
     """
-    happy-process-start starts running a process within a virtual node.
+    Starts a process running within a virtual node.
 
     happy-process-start [-h --help] [-q --quiet] [-i --id <NODE_NAME>]
-        [-t --tag <DAEMON_NAME>]  [-s --strace] [-e --env <ENVIRONMENT>] <COMMAND>
+                        [-t --tag <DAEMON_NAME>] [-s --strace]
+                        [-e --env <ENVIRONMENT>] <COMMAND>
+
+        -i --id     Required. Node on which to run the process. Find using
+                    happy-node-list or happy-state.
+        -t --tag    Required. Name of the process.
+        -s --strace Optional. Enable strace output for the process.
+        -e --env    Optional. An environment variable to pass to the node
+                    for use by the process.
+        <COMMAND>   Required. The command to run as process <DAEMON_NAME>.
 
     Example:
-    $ happy-process-start node_01 ContinuousPing ping 127.0.0.1
-        Starts a process within node_01 called ContinuousPing.
-        This process calls `ping 127.0.0.1`.
+    $ happy-process-start BorderRouter ContinuousPing ping 127.0.0.1
+        Starts a process within the BorderRouter node called ContinuousPing
+        that runs "ping 127.0.0.1" continuously.
 
     return:
         0    success

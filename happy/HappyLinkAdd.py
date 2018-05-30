@@ -21,7 +21,7 @@
 #    @file
 #       Implements HappyLinkAdd class that creates virtual nodes.
 #
-#       A virtual node is logical representation of a network namespace.
+#       A virtual node is a logical representation of a network namespace.
 #
 
 import os
@@ -44,13 +44,23 @@ def option():
 
 class HappyLinkAdd(HappyLink):
     """
-    happy-link-add creates a new link that can connect a virtual node to a network.
+    Creates a new link that connects a virtual node to a network. A virtual node
+    is a logical representation of a network namespace.
 
-    happy-link-add [-h --help] [-q --quiet] [-t --type <LINK_TYPE>] [-p --tap]
+    happy-link-add [-h --help] [-q --quiet] [-p --tap]
+                   [-t --type (cellular|out-of-band|thread|wan|wifi)]
 
-    Example:
-    $ happy-link-add thread1
-        Creates an ip link called thread1.
+        -p --tap    Configure the link as an L2 TAP device with a virtual bridge.
+                    Omit this parameter to default to an L3 TUN configuration for
+                    normal IP routing.
+        -t --type   Required. Type of link to add.
+
+    Examples:
+    $ happy-link-add thread
+        Creates a new Thread (wpan) network link.
+
+    $ happy-link-add -p wan
+        Creates a new WAN (eth) TAP network bridge.
 
     return:
         0    success

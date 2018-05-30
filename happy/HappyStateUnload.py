@@ -44,13 +44,17 @@ def option():
 
 class HappyStateUnload(State):
     """
-    happy-state-unload loads virtual network topology from a file.
+    Deletes a virtual network topology based on the state described in a
+    JSON file. If the current Happy state does not match the specified JSON
+    file, a partial deletion of the topology might occur.
 
     happy-state-unload [-h --help] [-q --quiet] [-f --file <JSON_FILE>]
 
+        -f --file   Required. A valid JSON file with the topology to delete.
+
     Example:
-    $ happy-state-unload <file>.json
-        Deletes virtual network topology based on description specified in <file>.json.
+    $ happy-state-unload mystate.json
+        Deletes the network topology based on the state described in mystate.json.
 
     return:
         0    success

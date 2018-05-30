@@ -53,34 +53,41 @@ def option():
 
 class HappyNodeRoute(HappyNode, HappyNetwork):
     """
-    happy-node-route manages virtual node IP routes.
+    Manages virtual node IP routes.
 
-    happy-node-route [-h --help] [-q --quiet] [-i --id <NODE_NAME>]
-                  [-a --add] [-d --delete] [-t --to <ADDRESS>] [-v --via <ADDRESS>]
-                  [-p --prefix <ADDRESS>] [-s --isp <ISP>] [-e --seed <SEED>]
+    happy-node-route [-h --help] [-q --quiet] [-a --add] [-d --delete]
+                     [-i --id <NETWORK_NAME>] [-t --to (<IP_ADDR>|default)]
+                     [-v --via (<IP_ADDR>|<NODE_NAME>|<IFACE>)] [-p --prefix <IP_ADDR>]
+                     [-s --isp <ISP>] [-e --seed <SEED>]
 
-                  The <ADDRESS> in  --to  can be IP address or 'default'.
-                  The <ADDRESS> in  --via  can be IP address or <NODE_NAME> + <PREFIX_ADDRESS>.
-                  The <TABLE> in --table can be the route table name
-                  The <ISP> in --current ethernet's provider
-                  The <SEED> in --priority can be the number <0-255> for the route table
+        -i --id     Required. Node to add routes to. Find using happy-node-list or
+                    happy-state.
+        -t --to     The destination address. Can be an IP address or 'default'. Use 'default'
+                    to ensure compatability of a saved Happy topology across different Linux
+                    hosts.
+        -v --via    The gateway address of a target network, if the route spans multiple
+                    networks. Can be an IP address, <NODE_NAME>, or <IFACE>. Use <NODE_NAME>
+                    or <IFACE> to ensure compatability of a saved Happy topology across
+                    different Linux hosts. When using <NODE_NAME> or <IFACE>, routes for
+                    both IPv4 and IPv6 are created as needed.
+        -p --prefix Gateway route prefix. Required if the gateway has more than one IP
+                    address.
+        -s --isp    Optional. The name of the routing table.
+        -e --seed   Optional. Route priority in the routing table. Range: 0-255
 
-    Example:
-    $ happy-node-route node_01 default 2002:0:1:1::1
-        Node node_01 get default route through 2002:0:1:1::1 address.
+    Examples:
+    $ happy-node-route BorderRouter default 2001:0db8:0111:0001
+        Adds a route to BorderRouter's default route via the 2001:0db8:0111:0001 address.
 
-    $ happy-node-route node_01 default 2002:0:1:1::1 isp="ethernet" seed=100
-        Node node_01 get default route through 2002:0:1:1::1 address and also route via the ethernet_table
+    $ happy-node-route ThreadNode default wpan0
+        Adds a route to ThreadNode's default route via the wpan0 interface.
 
-    $ happy-node-route node_01 default wpan0
-        Node node_01 get default route through wpan0 interface.
-        This will create two default routes through wpan0 for IPv4 and IPv6.
+    $ happy-node-route -i ThreadNode -t default -v wpan0 --isp main --seed 100
+        Adds a route to ThreadNode's default route via the wpan0 interface, as well as to
+        the main routing table.
 
-    $ happy-node-route --delete --id node_01 --to default --via wpan0
-        Node node_01 deletes default route through interface wpan0.
-
-    $ happy-node-route -a -i node_01 -t default -v node_02 -p 2002:0:1:1::
-        Node node_01 get default route through node_02, on gateway's address from 2002:0:1:1:: prefix.
+    $ happy-node-route -d -i ThreadNode -t default -v wpan0
+        Deletes ThreadNode's default route via the wpan0 interface.
 
     return:
         0    success

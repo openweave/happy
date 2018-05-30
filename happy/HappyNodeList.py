@@ -39,6 +39,8 @@ def option():
 
 class HappyNodeList(HappyNode):
     """
+    Displays a list of virtual nodes.
+
     happy-node-list [-h --help] [-q --quiet]
 
     return:

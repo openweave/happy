@@ -43,9 +43,16 @@ def option():
 
 class HappyLinkDelete(HappyLink):
     """
-    Deletes a virtual link.
+    Deletes a virtual link. A virtual link is logical representation of a
+    network interface.
 
     happy-link-delete [-h --help] [-q --quiet] [-i --id <LINK_NAME>]
+
+        -i --id     Required. Link to delete. Find using happy-link-list.
+
+    Example:
+    $ happy-link-delete wifi0
+        Deletes the wifi0 network link.
 
     return:
         0    success

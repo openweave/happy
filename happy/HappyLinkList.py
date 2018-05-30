@@ -19,7 +19,7 @@
 
 ##
 #    @file
-#       Implements HappyLinkList class that shows virtual links.
+#       Implements HappyLinkList class that displays a list of virtual links.
 #
 
 import os
@@ -39,6 +39,8 @@ def option():
 
 class HappyLinkList(HappyLink):
     """
+    Displays a list of virtual links.
+
     happy-link-list [-h --help] [-q --quiet]
 
     return:

@@ -46,10 +46,16 @@ def option():
 
 class HappyNodeDelete(HappyNode):
     """
-    Deletes a virtual node. If node has any network interfaces, those interfaces
-    will be deleted as well.
+    Deletes a virtual node. All network interfaces associated with the node
+    are also deleted.
 
     happy-node-delete [-h --help] [-q --quiet] [-i --id <NODE_NAME>]
+
+        -i --id     Required. Name of the node to delete.
+
+    Example:
+    $ happy-node-delete ThreadNode
+        Deletes the ThreadNode node and all its associated interfaces.
 
     return:
         0    success
