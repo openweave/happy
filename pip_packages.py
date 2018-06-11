@@ -21,11 +21,13 @@
 #    @file
 #       install all necessary python modules for all weave happy tests
 #
+import subprocess
+import sys
 import pip
 
 
 def pip_install(package):
-    pip.main(['install', package])
+    subprocess.check_call([sys.executable, '-m', 'pip', 'install', package])
 
 # apis in protobuf and google-api-python-client varies a lot for different version,
 # we should == to make sure version for the above modules is working
