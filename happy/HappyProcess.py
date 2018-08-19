@@ -176,6 +176,9 @@ class HappyProcess(HappyHost):
 
         procs = self.GetProcessTreeAsList(pid, create_time)
 
+        self.TerminateProcesses(procs)
+
+    def TerminateProcesses(self, procs):
         # first send SIGUSR1
         self.__signal_procs(procs, "SIGUSR1")
 
@@ -190,3 +193,15 @@ class HappyProcess(HappyHost):
         if alive:
             # if process is still around, just kill it
             self.__signal_procs(alive, "SIGKILL")
+
+    def GetProcessByName(self, name):
+        # TODO: Sometimes pid is there, but psutil cannot get this process, need to fix it.
+        processlist = []
+        for pid in psutil.get_pid_list():
+            try:
+                p = psutil.Process(pid)
+                if p.name == name:
+                    processlist.append(p)
+            except:
+                pass
+        return processlist

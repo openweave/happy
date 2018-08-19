@@ -50,7 +50,7 @@ class HappyProcessStrace(HappyNode):
     happy-process-strace [-h --help] [-q --quiet] [-i --id <NODE_NAME>]
                          [-t --tag <DAEMON_NAME>]
 
-        -i --id     Required. Node on which the process is running. Find using
+        -i --id     Optional. Node on which the process is running. Find using
                     happy-node-list or happy-state.
         -t --tag    Required. Name of the process.
 
@@ -73,18 +73,6 @@ class HappyProcessStrace(HappyNode):
         self.process_strace = None
 
     def __pre_check(self):
-        # Check if the name of the node is given
-        if not self.node_id:
-            emsg = "Missing name of the virtual node."
-            self.logger.error("[localhost] HappyProcessStrace: %s" % (emsg))
-            self.RaiseError()
-
-        # Check if the name of new node is not a duplicate (that it does not already exists).
-        if not self._nodeExists():
-            emsg = "virtual node %s does not exist." % (self.node_id)
-            self.logger.error("[%s] HappyProcessStrace: %s" % (self.node_id, emsg))
-            self.RaiseError()
-
         # Check if the new process is given
         if not self.tag:
             emsg = "Missing name of the process to retrieve strace from."

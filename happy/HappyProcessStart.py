@@ -45,7 +45,7 @@ options["command"] = None
 options["strace"] = False
 options["env"] = {}
 options["sync_on_output"] = None
-
+options["rootMode"] = False
 
 def option():
     return options.copy()
@@ -53,13 +53,13 @@ def option():
 
 class HappyProcessStart(HappyNode, HappyProcess):
     """
-    Starts a process running within a virtual node.
+    Starts a happy process.
 
     happy-process-start [-h --help] [-q --quiet] [-i --id <NODE_NAME>]
                         [-t --tag <DAEMON_NAME>] [-s --strace]
                         [-e --env <ENVIRONMENT>] <COMMAND>
 
-        -i --id     Required. Node on which to run the process. Find using
+        -i --id     Optional. Node on which to run the process. Find using
                     happy-node-list or happy-state.
         -t --tag    Required. Name of the process.
         -s --strace Optional. Enable strace output for the process.
@@ -90,6 +90,7 @@ class HappyProcessStart(HappyNode, HappyProcess):
         self.sync_on_output = opts["sync_on_output"]
         self.output_fileput_suffix = ".out"
         self.strace_suffix = ".strace"
+        self.rootMode = opts["rootMode"]
 
     def __stopProcess(self):
         emsg = "Process %s stops itself." % (self.tag)
@@ -105,18 +106,6 @@ class HappyProcessStart(HappyNode, HappyProcess):
         self.readState()
 
     def __pre_check(self):
-        # Check if the name of the node is given
-        if not self.node_id:
-            emsg = "Missing name of the virtual node that should start process."
-            self.logger.error("[localhost] HappyProcessStart: %s" % (emsg))
-            self.exit()
-
-        # Check if the node exists.
-        if not self._nodeExists():
-            emsg = "virtual node %s does not exist." % (self.node_id)
-            self.logger.error("[%s] HappyProcessStart: %s" % (self.node_id, emsg))
-            self.exit()
-
         # Check if the new process is given
         if not self.tag:
             emsg = "Missing name of the new process to start."
@@ -289,9 +278,13 @@ class HappyProcessStart(HappyNode, HappyProcess):
             cmd = "bash -c " + env_vars + cmd
 
         if need_internal_sudo:
-            cmd = self.runAsUser(cmd)
+            if self.rootMode:
+                cmd = self.runAsRoot(cmd)
+            else:
+                cmd = self.runAsUser(cmd)
 
-        cmd = "ip netns exec " + self.uniquePrefix(self.node_id) + " " + cmd
+        if self.node_id:
+            cmd = "ip netns exec " + self.uniquePrefix(self.node_id) + " " + cmd
 
         cmd = self.runAsRoot(cmd)
 
