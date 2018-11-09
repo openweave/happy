@@ -136,14 +136,14 @@ class Driver(IP):
         self.main_conf_file = self.happy_path + "/" + main_config
 
         self.__configure()
+        self.readConfiguration()
+        self.configHappyLogPath()
         self.__logging()
 
         if not g_locks["state"]:
             g_locks["state"] = StateLock("state", 100, self.state_file, self.logger)
         if not g_locks["rt"]:
             g_locks["rt"] = StateLock("rt", 5000, self.rt_state_file, self.logger)
-
-        self.readConfiguration()
 
         self.readState()
 
@@ -195,15 +195,6 @@ class Driver(IP):
             sys.exit(1)
 
         try:
-            confDict = dict(self.main_conf)
-            confDict['state_id'] = self.state_id
-            self.process_log_prefix = self.main_conf["process_log_prefix"] % confDict
-        except Exception:
-            print "Failed to find process's log prefix in the main configuration file %s." \
-                % (self.main_conf_file)
-            sys.exit(1)
-
-        try:
             self.state_file_prefix = self.main_conf["state_file_prefix"]
             self.state_file_suffix = self.main_conf["state_file_suffix"]
             self.isp_suffix = self.main_conf["default_isp_suffix"]
@@ -211,8 +202,8 @@ class Driver(IP):
             self.state_file = os.path.expanduser(
                 self.state_file_prefix + self.state_id + self.state_file_suffix)
             self.rt_state_file = os.path.expanduser(self.state_file_prefix + self.rt_suffix + self.state_file_suffix)
-            self.configuration_file = os.path.expanduser(
-                self.main_conf["configuration_file"])
+            self.configuration_file = os.path.expanduser(self.main_conf["configuration_file"])
+
         except Exception:
             print "Failed to parse main configuration for state file names: %s" \
                 % (self.main_conf_file)
@@ -290,6 +281,28 @@ class Driver(IP):
 
         except Exception:
             self.__initConfiguration()
+
+    def configHappyLogPath(self):
+        """
+        set happy test log path if happy_log_path in ~/.happy_conf.json
+        log_directory=happy_log_path if happy_log_path in ~/.happy_conf.json
+        """
+        try:
+            if "happy_log_path" in self.configuration:
+                self.main_conf["log_directory"] = self.configuration["happy_log_path"]
+
+            confDict = dict(self.main_conf)
+            confDict['state_id'] = self.state_id
+
+            if not os.path.exists(confDict["log_directory"]):
+                os.makedirs(confDict["log_directory"])
+
+            self.process_log_prefix = self.main_conf["process_log_prefix"] % confDict
+
+        except Exception as e:
+            print "Failed to find process's log prefix in the main configuration file %s. Exception %s" \
+                % (self.main_conf_file, str(e))
+            sys.exit(1)
 
     def writeConfiguration(self, configuration, config_type='user'):
         try:
