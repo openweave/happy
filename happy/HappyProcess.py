@@ -37,6 +37,24 @@ class HappyProcess(HappyHost):
     def __init__(self, node_id=None):
         HappyHost.__init__(self)
 
+    def GetProcessByPID(self, pid, create_time):
+        """A helper method for finding the process by PID and creation time.  Returns a
+        psutils.Process object if there is a process matching the PID, creation
+        time tuple, or None if no such process exist.
+        """
+
+        if pid is None or create_time is None:
+            return None
+
+        p = psutil.Process(pid)
+
+        try:
+            p_create_time = p.create_time()
+        except Exception:
+            p_create_time = p.create_time
+
+        return create_time == p_create_time and p or None
+
     def processExists(self, tag, node_id=None):
         if node_id is None:
             node_id = self.node_id
@@ -48,8 +66,8 @@ class HappyProcess(HappyHost):
             return False
 
         try:
-            p = psutil.Process(pid)
-            return p.is_running() and p.create_time == create_time and p.status not in [psutil.STATUS_ZOMBIE, psutil.STATUS_DEAD]
+            p = self.GetProcessByPID(pid, create_time)
+            return p is not None and p.is_running() and p.status not in [psutil.STATUS_ZOMBIE, psutil.STATUS_DEAD]
         except Exception:
             return False
 
@@ -58,8 +76,8 @@ class HappyProcess(HappyHost):
             return
         p = None
         try:
-            p = psutil.Process(pid)
-            if p.is_running() and p.create_time == create_time and p.status not in [psutil.STATUS_ZOMBIE, psutil.STATUS_DEAD]:
+            p = self.GetProcessByPID(pid, create_time)
+            if p is not None and p.is_running() and p.status not in [psutil.STATUS_ZOMBIE, psutil.STATUS_DEAD]:
                 val = p.wait(timeout)
                 if val is None:
                     self.logger.debug("Process is terminated ")
@@ -89,10 +107,17 @@ class HappyProcess(HappyHost):
 
     def GetProcessTreeAsList(self, pid, create_time):
         try:
-            p = psutil.Process(pid)
-            if (p.create_time != create_time):
+            p = self.GetProcessByPID(pid, create_time)
+            if p is None:
                 return []
-            childs = p.get_children(recursive=True)
+
+            # python psutil 2.x and later expose Process.children() method; the
+            # equivalent functionality in psutil 1.2.1 was called get_children()
+
+            try:
+                childs = p.children(recursive=True)
+            except AttributeError:
+                childs = p.get_children(recursive=True)
             # At the time of this writing, get_children returns a list of the
             # children in breadth-first order. All leaves
             # are at the end of the list.

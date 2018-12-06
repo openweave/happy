@@ -323,7 +323,7 @@ class HappyProcessStart(HappyNode, HappyProcess):
             # At python.psutil 2.0.0, create_time changed from a data
             # member to a member function. Try to access the modern member
             # function first. If that throws, try the old data member.
-            
+
             try:
                 self.create_time = p.create_time()
             except Exception:
