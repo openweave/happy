@@ -1,4 +1,5 @@
 #
+#    Copyright (c) 2018 Google LLC.
 #    Copyright (c) 2016-2017 Nest Labs, Inc.
 #    All rights reserved.
 #
@@ -15,47 +16,50 @@
 #    limitations under the License.
 #
 
-PYTHON ?= python
-PYTHON_VERSION ?= $(shell $(PYTHON) -c "import sys; sys.stdout.write(sys.version[:3])")
-SUDO ?= sudo
-MAKE ?= make
-PEP8_LINT ?= pep8
-PEP8_LINT_ARGS ?= --max-line-length=132
+# Binaries used by this makefile
+
+DPKG               ?= $(shell which dpkg 2> /dev/null)
+MAKE               ?= make
+PEP8_LINT          ?= pep8
+PEP8_LINT_ARGS     ?= --max-line-length=132
+PYTHON             ?= python
+PYTHON_VERSION     ?= $(shell $(PYTHON) -c "import sys; sys.stdout.write(sys.version[:3])")
+SUDO               ?= sudo
+
+# The list of Debian packages on which Happy depends which must be
+# installed before Happy may be used.
+
+DPKG_PREREQUISITES := \
+    bridge-utils      \
+    python-lockfile   \
+    python-psutil     \
+    python-setuptools \
+    $(NULL)
+
+# check-dpkg-prequisite <package>
+#
+# Determines and verbosely reports whether the specified Debian
+# package is installed or not, exiting with the appropriate status.
+
+define check-dpkg-prerequisite
+@echo -n "Checking for $(1)...";
+@if `$(DPKG) -s $(1) > /dev/null 2>&1`; then \
+    echo "ok"; \
+else \
+    echo "failed"; \
+    echo "The package '$(1)' is required and is not installed. Please run 'sudo apt-get install $(1)' to install it."; \
+    exit 1; \
+fi
+endef
+
+check_TARGETS = $(addprefix check-dpkg-,$(DPKG_PREREQUISITES))
+
+check-dpkg-%: $(DPKG)
+	$(call check-dpkg-prerequisite,$(*))
 
 all: install
 
-check-prerequisites:
-	@if `which dpkg >& /dev/null`; then \
-		echo -n "Checking for python-setuptools..."; \
-		if `dpkg -s python-setuptools >& /dev/null`; then \
-			echo "ok"; \
-		else \
-			echo "The package python-setuptools is required and is not installed. Please run 'sudo apt-get install python-setuptools' to install it."; \
-			exit 1; \
-		fi; \
-		echo -n "Checking for bridge-utils..."; \
-		if `dpkg -s bridge-utils >& /dev/null`; then \
-			echo "ok"; \
-		else \
-			echo "The package bridge-utils is required and is not installed. Please run 'sudo apt-get install bridge-utils' to install it."; \
-			exit 1; \
-		fi; \
-		echo -n "Checking for python-lockfile..."; \
-		if `dpkg -s python-lockfile >& /dev/null`; then \
-			echo "ok"; \
-		else \
-			echo "The package python-lockfile is required and is not installed. Please run 'sudo apt-get install python-lockfile' to install it."; \
-			exit 1; \
-		fi; \
-		echo -n "Checking for python-psutil..."; \
-		if `dpkg -s python-psutil >& /dev/null`; then \
-			echo "ok"; \
-		else \
-			echo "The package python-psutil is required and is not installed. Please run 'sudo apt-get install python-psutil' to install it."; \
-			exit 1; \
-		fi; \
-	fi
-
+check-prerequisites: $(check_TARGETS)
 
 # If HAPPY_PATH defined, install or uninstall the specific, $HAPPY_PATH,
 # location of the Happy package. If HAPPY_PATH is not defined, by default
