@@ -319,7 +319,16 @@ class HappyProcessStart(HappyNode, HappyProcess):
             # around in <defunct> until the popen object has been destroyed or popen.poll() has
             # been called.
             p = psutil.Process(self.child_pid)
-            self.create_time = p.create_time
+
+            # At python.psutil 2.0.0, create_time changed from a data
+            # member to a member function. Try to access the modern member
+            # function first. If that throws, try the old data member.
+
+            try:
+                self.create_time = p.create_time()
+            except Exception:
+                self.create_time = p.create_time
+
             emsg = "Create time: " + str(self.create_time)
             self.logger.debug("[%s] HappyProcessStart: %s." % (self.node_id, emsg))
 
