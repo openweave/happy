@@ -83,7 +83,7 @@ class HappyProcessOutput(HappyNode):
         fout = self.getNodeProcessOutputFile(self.tag, self.node_id)
 
         if fout is None:
-            emsg = "Process tag %s could not be fout at node %s." % (self.tag, self.node_id)
+            emsg = "Process tag %s could not be found at node %s." % (self.tag, self.node_id)
             self.logger.error("[localhost] HappyProcessOutput: %s" % (emsg))
             self.RaiseError(emsg)
 
