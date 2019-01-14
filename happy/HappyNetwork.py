@@ -28,6 +28,7 @@ import os
 import sys
 
 from happy.Utils import *
+from happy.utils.IP import IP
 from happy.HappyHost import HappyHost
 import happy.HappyLinkDelete
 
@@ -147,7 +148,7 @@ class HappyNetwork(HappyHost):
             return 100
 
         for ip in all_ips:
-            if self.isIpv6(ip):
+            if IP.isIpv6(ip):
                 continue
 
             ip_list = ip.split(".")

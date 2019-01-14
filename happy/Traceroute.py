@@ -27,6 +27,7 @@ import sys
 
 from happy.ReturnMsg import ReturnMsg
 from happy.Utils import *
+from happy.utils.IP import IP
 from happy.HappyNode import HappyNode
 
 options = {}
@@ -89,7 +90,7 @@ class Traceroute(HappyNode):
             self.exit()
 
         # Check if the destination node exists.
-        if not self.isIpAddress(self.destination) and not self._nodeExists(self.destination):
+        if not IP.isIpAddress(self.destination) and not self._nodeExists(self.destination):
             emsg = "virtual destination node %s does not exist." % (self.destination)
             self.logger.error("[%s] Traceroute: %s" % (self.source, emsg))
             self.exit()
@@ -97,7 +98,7 @@ class Traceroute(HappyNode):
     def __get_addresses(self):
         self.addresses = {}
 
-        if self.isIpAddress(self.destination):
+        if IP.isIpAddress(self.destination):
             self.addresses[self.destination] = None
             return
 
@@ -110,12 +111,12 @@ class Traceroute(HappyNode):
     def __traceroute_to_address(self, addr):
         cmd = ""
 
-        if self.isIpv6(addr):
+        if IP.isIpv6(addr):
             cmd += "traceroute6"
         else:
             cmd += "traceroute"
 
-        if self.isMulticast(addr):
+        if IP.isMulticast(addr):
             cmd += ""
 
         cmd += " " + addr

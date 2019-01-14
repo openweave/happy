@@ -28,6 +28,7 @@ import os
 import sys
 
 from happy.Utils import *
+from happy.utils.IP import IP
 from happy.HappyHost import HappyHost
 import happy.HappyLinkDelete
 
@@ -132,7 +133,7 @@ class HappyNode(HappyHost):
             if l[0][:4] == "inet":
                 addr = l[1]
                 addr, mask = addr.split("/")
-                addr = self.paddingZeros(addr)
+                addr = IP.paddingZeros(addr)
                 ipaddrs.append(addr)
 
         return ipaddrs
@@ -145,7 +146,7 @@ class HappyNode(HappyHost):
             if l[0][:4] == "inet":
                 addr = l[1]
                 addr, mask = addr.split("/")
-                addr = self.paddingZeros(addr)
+                addr = IP.paddingZeros(addr)
                 if addr != address:
                     continue
 
@@ -183,7 +184,7 @@ class HappyNode(HappyHost):
             hwAddr = self.getHwAddress(interface_id, node_id)
 
             if hwAddr is not None:
-                eui = self.MAC48toEUI64(hwAddr)
+                eui = IP.MAC48toEUI64(hwAddr)
 
         return eui
 
@@ -193,29 +194,29 @@ class HappyNode(HappyHost):
         if eui is None:
             return None
 
-        iid = self.EUI64toIID(eui)
+        iid = IP.EUI64toIID(eui)
         return iid
 
     def getNodeAddressOnPrefix(self, prefix, id):
-        if self.isIpv6(prefix):
+        if IP.isIpv6(prefix):
             return self.__getNodeIPv6AddressOnPrefix(prefix, id)
         else:
             return self.__getNodeIPv4AddressOnPrefix(prefix, id)
 
     def __getNodeIPv6AddressOnPrefix(self, prefix, id):
-        prefix_addr, prefix_mask = self.splitAddressMask(prefix)
+        prefix_addr, prefix_mask = IP.splitAddressMask(prefix)
 
         addr = prefix_addr + "::" + id
 
         if addr.count(":") == 8:
             addr = addr.replace("::", ":")
 
-        addr = self.paddingZeros(addr)
+        addr = IP.paddingZeros(addr)
 
         return addr
 
     def __getNodeIPv4AddressOnPrefix(self, prefix, id):
-        prefix_addr, prefix_mask = self.splitAddressMask(prefix)
+        prefix_addr, prefix_mask = IP.splitAddressMask(prefix)
         prefix_mask = int(float(prefix_mask))
 
         addr = prefix_addr.split(".")[:prefix_mask / 8]

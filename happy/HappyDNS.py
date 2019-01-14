@@ -28,6 +28,7 @@ import sys
 
 from happy.ReturnMsg import ReturnMsg
 from happy.Utils import *
+from happy.utils.IP import IP
 from happy.HappyNode import HappyNode
 
 options = {}
@@ -87,7 +88,7 @@ class HappyDNS(HappyNode):
             self.exit()
 
         for dns_addr in self.dns:
-            if not self.isIpv4(dns_addr):
+            if not IP.isIpv4(dns_addr):
                 emsg = "DNS %s is not a valid IPv4 address." % (dns_addr)
                 self.logger.error("[localhost] HappyDNS: %s" % (emsg))
                 self.exit()

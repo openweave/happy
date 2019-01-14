@@ -27,10 +27,8 @@ import socket
 
 
 class IP:
-    def __init__(self):
-        pass
-
-    def getIPv6Subnet(self, addr):
+    @staticmethod
+    def getIPv6Subnet(addr):
         a = addr.split(":")
 
         if len(a) > 3:
@@ -38,7 +36,8 @@ class IP:
         else:
             None
 
-    def getIPv6IID(self, addr):
+    @staticmethod
+    def getIPv6IID(addr):
         a = addr.split(":")
 
         if len(a) == 8:
@@ -46,8 +45,9 @@ class IP:
         else:
             return None
 
-    def paddingZeros(self, addr_mask):
-        if not self.isIpv6(addr_mask):
+    @staticmethod
+    def paddingZeros(addr_mask):
+        if not IP.isIpv6(addr_mask):
             return addr_mask
 
         if "/" in addr_mask:
@@ -80,7 +80,8 @@ class IP:
 
         return ret
 
-    def dropZeros(self, addr):
+    @staticmethod
+    def dropZeros(addr):
         prefix = []
         for a in reversed(addr.split(":")):
             if a == "0000" and prefix == []:
@@ -90,12 +91,13 @@ class IP:
         prefix.reverse()
         return ":".join(prefix)
 
-    def prefixMatchAddress(self, prefix, addr):
+    @staticmethod
+    def prefixMatchAddress(prefix, addr):
         if prefix is None:
             return False
 
-        aprefix, amask = self.splitAddressMask(prefix)
-        aprefix = self.dropZeros(aprefix)
+        aprefix, amask = IP.splitAddressMask(prefix)
+        aprefix = IP.dropZeros(aprefix)
 
         if len(aprefix) > len(addr):
             return False
@@ -104,7 +106,8 @@ class IP:
 
         return aprefix[:plen] == addr[:plen]
 
-    def getPrefix(self, addr, mask=None):
+    @staticmethod
+    def getPrefix(addr, mask=None):
         if "::" in addr:
             return addr.split("::")[0]
 
@@ -123,42 +126,48 @@ class IP:
             addr_list = addr.split(".")[:mask/8]
             return ".".join(addr_list)
 
-    def isIpv6(self, addr):
+    @staticmethod
+    def isIpv6(addr):
         if addr is None:
             return False
         return ':' in addr
 
-    def isIpv4(self, addr):
+    @staticmethod
+    def isIpv4(addr):
         if addr is None:
             return False
         return '.' in addr and not any(c.isalpha() for c in addr)
 
-    def isIpAddress(self, addr):
+    @staticmethod
+    def isIpAddress(addr):
         if addr is None:
             return False
-        return self.isIpv4(addr) or self.isIpv6(addr)
+        return IP.isIpv4(addr) or IP.isIpv6(addr)
 
-    def isMulticast(self, addr):
+    @staticmethod
+    def isMulticast(addr):
         if addr is None:
             return False
         return False
 
-    def splitAddressMask(self, ipmask):
+    @staticmethod
+    def splitAddressMask(ipmask):
         if '/' in ipmask:
             addr, mask = ipmask.split("/")
         else:
             addr = ipmask
-            if self.isIpv6(ipmask):
+            if IP.isIpv6(ipmask):
                 mask = 64     # By default we give mask of 64
             else:
                 mask = 24
 
-        if self.isIpv6(addr):
-            addr = self.paddingZeros(addr)
+        if IP.isIpv6(addr):
+            addr = IP.paddingZeros(addr)
 
         return (addr, mask)
 
-    def MAC48toEUI64(self, mac):
+    @staticmethod
+    def MAC48toEUI64(mac):
         addr = mac.split(":")
         if len(addr) != 6:
             return None
@@ -167,11 +176,12 @@ class IP:
         eui = "-".join(addr)
         return eui
 
-    def EUI64toIID(self, addr):
+    @staticmethod
+    def EUI64toIID(addr):
         int_addr = addr
 
         if type(addr) == str:
-            int_addr = self.eui64_string_to_int(addr)
+            int_addr = IP.eui64_string_to_int(addr)
 
         if int_addr >= 65536:
             if (1 << 57) > int_addr:
@@ -180,33 +190,36 @@ class IP:
                 int_addr = int_addr | (1 << 57)
 
         if type(addr) == str:
-            iid_addr = self.int_to_ipv6_addr_string(int_addr)
+            iid_addr = IP.int_to_ipv6_addr_string(int_addr)
 
         return iid_addr
 
-    def IIDtoEUI64(self, addr):
+    @staticmethod
+    def IIDtoEUI64(addr):
         eui_addr = addr
 
         if type(addr) == str:
-            eui_addr = self.ipv6_addr_string_to_int(addr)
+            eui_addr = IP.ipv6_addr_string_to_int(addr)
 
         eui_addr = ~pow(2, 57) & eui_addr
 
         if type(addr) == str:
-            eui_addr = self.int_to_eui64_string(eui_addr)
+            eui_addr = IP.int_to_eui64_string(eui_addr)
 
         return eui_addr
 
-    def mac48_string_to_int(self, hw_addr):
+    @staticmethod
+    def mac48_string_to_int(hw_addr):
         res = "0x"
-        for i in hw_addr.split(":"):
+        for i in str(hw_addr).split(":"):
             for x in range(2 - len(i)):
                 res += "0"
             res += i
         res = int(res, 16)
         return res
 
-    def eui64_string_to_int(self, eui_addr):
+    @staticmethod
+    def eui64_string_to_int(eui_addr):
         res = "0x"
         for i in eui_addr.split("-"):
             for x in range(2 - len(i)):
@@ -215,7 +228,8 @@ class IP:
         res = int(res, 16)
         return res
 
-    def ipv6_addr_string_to_int(self, ipv6_addr):
+    @staticmethod
+    def ipv6_addr_string_to_int(ipv6_addr):
         res = "0x"
         for i in ipv6_addr.split(":"):
             for x in range(4 - len(i)):
@@ -224,7 +238,8 @@ class IP:
         res = int(res, 16)
         return res
 
-    def int_to_eui64_string(self, int_val):
+    @staticmethod
+    def int_to_eui64_string(int_val):
         res = hex(int_val)
         res = str(res)
         if res[-1] == "L":
@@ -240,7 +255,8 @@ class IP:
         res = "-".join(res)
         return str(res)
 
-    def int_to_mac48_string(self, int_val):
+    @staticmethod
+    def int_to_mac48_string(int_val):
         res = hex(int_val)
         res = str(res)
         if res[-1] == "L":
@@ -256,7 +272,8 @@ class IP:
         res = ":".join(res)
         return str(res)
 
-    def int_to_ipv6_addr_string(self, int_val):
+    @staticmethod
+    def int_to_ipv6_addr_string(int_val):
         res = hex(int_val)
         res = str(res)
         if res[-1] == "L":
@@ -272,9 +289,11 @@ class IP:
         res = ":".join(res)
         return str(res)
 
-    def isDomainName(self, domain):
-        return "." in domain and not self.isIpv4(domain)
+    @staticmethod
+    def isDomainName(domain):
+        return "." in domain and not IP.isIpv4(domain)
 
-    def getHostByName(self, name):
+    @staticmethod
+    def getHostByName(name):
         ip = socket.gethostbyname(name)
         return ip

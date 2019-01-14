@@ -27,6 +27,7 @@ import sys
 
 from happy.ReturnMsg import ReturnMsg
 from happy.Utils import *
+from happy.utils.IP import IP
 from happy.HappyNode import HappyNode
 
 options = {}
@@ -92,7 +93,7 @@ class Ping(HappyNode):
             self.exit()
 
         # Check if the destination node exists.
-        if not self.isIpAddress(self.destination) and not self._nodeExists(self.destination):
+        if not IP.isIpAddress(self.destination) and not self._nodeExists(self.destination):
             emsg = "virtual destination node %s does not exist." % (self.destination)
             self.logger.error("[%s] Ping: %s" % (self.source, emsg))
             self.exit()
@@ -105,7 +106,7 @@ class Ping(HappyNode):
     def __get_addresses(self):
         self.addresses = {}
 
-        if self.isIpAddress(self.destination):
+        if IP.isIpAddress(self.destination):
             self.addresses[self.destination] = 100
             return
 
@@ -118,7 +119,7 @@ class Ping(HappyNode):
     def __ping_on_address(self, addr):
         cmd = ""
 
-        if self.isIpv6(addr):
+        if IP.isIpv6(addr):
             cmd += "ping6"
         else:
             cmd += "ping"
@@ -128,7 +129,7 @@ class Ping(HappyNode):
         if self.size is not None:
             cmd += " -s " + str(self.size)
 
-        if self.isMulticast(addr):
+        if IP.isMulticast(addr):
             cmd += ""
 
         cmd += " " + addr
@@ -198,7 +199,7 @@ class Ping(HappyNode):
         self.__post_check()
 
         for addr in self.addresses.keys():
-            if self.isIpAddress(self.destination):
+            if IP.isIpAddress(self.destination):
                 self.logger.info("ping from " + self.source + " to address " +
                                  addr + " -> " + str(self.addresses[addr]) +
                                  "% packet loss")

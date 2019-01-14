@@ -30,6 +30,7 @@ import sys
 
 from happy.ReturnMsg import ReturnMsg
 from happy.Utils import *
+from happy.utils.IP import IP
 from happy.HappyNetwork import HappyNetwork
 from happy.HappyNode import HappyNode
 import happy.HappyNodeRoute
@@ -137,13 +138,13 @@ class HappyNetworkRoute(HappyNetwork, HappyNode):
             self.exit()
 
         # Check for mix IP addresses
-        if self.isIpAddress(self.to) and self.isIpAddress(self.via) and self.isIpv6(self.to) != self.isIpv6(self.via):
+        if IP.isIpAddress(self.to) and IP.isIpAddress(self.via) and IP.isIpv6(self.to) != IP.isIpv6(self.via):
             emsg = "Mixing addresses %s and %s." % (self.to, self.via)
             self.logger.error("[%s] HappyNetworkRoute: %s" % (self.node_id, emsg))
             self.exit()
 
         # Check if destination is a node
-        if self.to != "default" and not self.isIpAddress(self.to):
+        if self.to != "default" and not IP.isIpAddress(self.to):
             if not self._nodeExists(self.to):
                 emsg = "Don't know what %s to-address is. If it is a node, it can't be found." % (self.to)
                 self.logger.error("[localhost] HappyNetworkRoute: %s" % (emsg))
@@ -154,12 +155,12 @@ class HappyNetworkRoute(HappyNetwork, HappyNode):
                 self.logger.error("[localhost] HappyNetworkRoute: %s" % (emsg))
                 self.exit()
 
-        if self.isIpAddress(self.to):
-            self.to = self.paddingZeros(self.to)
+        if IP.isIpAddress(self.to):
+            self.to = IP.paddingZeros(self.to)
 
         # Check if gateway is an address or a node
-        if self.isIpAddress(self.via):
-            self.via = self.paddingZeros(self.via)
+        if IP.isIpAddress(self.via):
+            self.via = IP.paddingZeros(self.via)
             self.via_node = self.getNodeIdFromAddress(self.via)
 
             if self.via_node is None or not self._nodeExists(self.via_node):

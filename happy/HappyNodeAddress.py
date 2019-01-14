@@ -29,6 +29,7 @@ import sys
 
 from happy.ReturnMsg import ReturnMsg
 from happy.Utils import *
+from happy.utils.IP import IP
 from happy.HappyNode import HappyNode
 
 options = {}
@@ -110,14 +111,14 @@ class HappyNodeAddress(HappyNode):
             self.logger.error("[%s] HappyNodeAddress: %s" % (self.node_id, emsg))
             self.exit()
 
-        self.ip_address, self.ip_mask = self.splitAddressMask(self.address)
-        self.ip_address = self.paddingZeros(self.ip_address)
+        self.ip_address, self.ip_mask = IP.splitAddressMask(self.address)
+        self.ip_address = IP.paddingZeros(self.ip_address)
 
         if not self.delete:
             self.add = True
 
         # Check if node has given prefix
-        addr_prefix = self.getPrefix(self.ip_address, self.ip_mask)
+        addr_prefix = IP.getPrefix(self.ip_address, self.ip_mask)
         if self.delete and addr_prefix not in self.getNodeInterfacePrefixes(self.interface):
             emsg = "virtual node %s may not have any addresses on prefix %s." % (self.node_id, addr_prefix)
             self.logger.warning("[%s] HappyNodeAddress: %s" % (self.node_id, emsg))
@@ -131,7 +132,7 @@ class HappyNodeAddress(HappyNode):
     def __add_address(self):
         cmd = "ip "
 
-        if self.isIpv6(self.address):
+        if IP.isIpv6(self.address):
             cmd += "-6 "
 
         cmd += "addr add " + str(self.ip_address) + "/" + str(self.ip_mask) + " dev " + self.interface
@@ -147,7 +148,7 @@ class HappyNodeAddress(HappyNode):
 
     def __delete_address(self):
         cmd = "ip "
-        if self.isIpv6(self.address):
+        if IP.isIpv6(self.address):
             cmd += "-6 "
         cmd += "addr del " + str(self.ip_address) + "/" + str(self.ip_mask) + " dev " + self.interface
 
@@ -160,7 +161,7 @@ class HappyNodeAddress(HappyNode):
         has_ip = False
 
         for iaddr in ipaddrs:
-            addr_part, _ = self.splitAddressMask(iaddr)
+            addr_part, _ = IP.splitAddressMask(iaddr)
             if self.ip_address == addr_part:
                 has_ip = True
                 break
