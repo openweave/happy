@@ -30,6 +30,7 @@ import sys
 
 from happy.ReturnMsg import ReturnMsg
 from happy.Utils import *
+from happy.utils.IP import IP
 from happy.HappyLink import HappyLink
 from happy.HappyNetwork import HappyNetwork
 from happy.HappyNode import HappyNode
@@ -199,13 +200,13 @@ class HappyNodeJoin(HappyLink, HappyNode, HappyNetwork):
 
     def __check_node_hw_addr(self):
         hw_addr = self.getHwAddress(self.node_interface_name, self.node_id)
-        hw_addr_int = self.mac48_string_to_int(hw_addr)
+        hw_addr_int = IP.mac48_string_to_int(hw_addr)
 
         if (hw_addr_int & (1 << 41)):
             hw_addr_int = hw_addr_int & ~(1 << 41)
-            new_hw_addr = self.int_to_mac48_string(hw_addr_int)
+            new_hw_addr = IP.mac48_string_to_int(hw_addr_int)
 
-            cmd = "ip link set " + self.node_interface_name + " address " + new_hw_addr
+            cmd = "ip link set " + self.node_interface_name + " address " + str(new_hw_addr)
             cmd = self.runAsRoot(cmd)
             r = self.CallAtNode(self.node_id, cmd)
 
@@ -238,7 +239,7 @@ class HappyNodeJoin(HappyLink, HappyNode, HappyNetwork):
             options["node_id"] = self.node_id
             options["interface"] = self.node_interface_name
 
-            if self.isIpv6(prefix):
+            if IP.isIpv6(prefix):
                 nid = self.getInterfaceId(self.node_interface_name, self.node_id)
             else:
                 nid = self.getNextNetworkIPv4Id(prefix, self.network_id)

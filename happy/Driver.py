@@ -36,7 +36,7 @@ import sys
 import time
 import happy.HappyLogger as HappyLogger
 
-from happy.IP import IP
+from happy.utils.IP import IP
 from happy.Utils import *
 
 log_config = "conf/log_config.json"
@@ -120,10 +120,8 @@ class StateLockManager(object):
         self.state_lock.break_lock()
 
 
-class Driver(IP):
+class Driver:
     def __init__(self):
-        IP.__init__(self)
-
         self.state = {}
         self.isp_state = {}
         self.configuration = {}

@@ -25,6 +25,7 @@
 
 import logging
 
+from happy.utils.IP import IP
 from happy.Driver import Driver
 
 
@@ -213,7 +214,7 @@ class State(Driver):
         for interface_id in node_public_interfaces:
             addresses = self.getNodeInterfaceAddresses(interface_id, node_id, state)
             for addr in addresses:
-                if self.isIpv4(addr):
+                if IP.isIpv4(addr):
                     return addr
         return None
 
@@ -254,7 +255,7 @@ class State(Driver):
         prefixes = []
         for addr in self.getNodeInterfaceAddresses(interface_id, node_id, state):
             mask = self.getNodeInterfaceAddressMask(interface_id, addr, node_id, state)
-            prefix = self.getPrefix(addr, mask)
+            prefix = IP.getPrefix(addr, mask)
             prefixes.append(prefix)
         return prefixes
 
@@ -427,7 +428,7 @@ class State(Driver):
         addrs = self.getNodeAddresses(node_id, state)
         res = []
         for addr in addrs:
-            if self.prefixMatchAddress(prefix, addr):
+            if IP.prefixMatchAddress(prefix, addr):
                 res.append(addr)
         return res
 
@@ -712,8 +713,8 @@ class State(Driver):
             if "route" not in node_record.keys():
                 node_record["route"] = {}
 
-            if ("via" in record.keys() and self.isIpv6(record["via"])) or \
-               ("prefix" in record.keys() and self.isIpv6(record["prefix"])):
+            if ("via" in record.keys() and IP.isIpv6(record["via"])) or \
+               ("prefix" in record.keys() and IP.isIpv6(record["prefix"])):
                 to = to + "_v6"
             else:
                 to = to + "_v4"
@@ -736,8 +737,8 @@ class State(Driver):
             if "route" not in network_record.keys():
                 network_record["route"] = {}
 
-            if ("via" in record.keys() and self.isIpv6(record["via"])) or \
-               ("prefix" in record.keys() and self.isIpv6(record["prefix"])):
+            if ("via" in record.keys() and IP.isIpv6(record["via"])) or \
+               ("prefix" in record.keys() and IP.isIpv6(record["prefix"])):
                 to = to + "_v6"
             else:
                 to = to + "_v4"

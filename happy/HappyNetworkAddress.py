@@ -30,6 +30,7 @@ import sys
 
 from happy.ReturnMsg import ReturnMsg
 from happy.Utils import *
+from happy.utils.IP import IP
 from happy.HappyNetwork import HappyNetwork
 from happy.HappyNode import HappyNode
 import happy.HappyNodeAddress
@@ -99,8 +100,8 @@ class HappyNetworkAddress(HappyNetwork, HappyNode):
             self.logger.error("[%s] HappyNetworkAddress: %s" % (self.network_id, emsg))
             self.exit()
 
-        self.ip_prefix, self.ip_mask = self.splitAddressMask(self.address)
-        self.ip_prefix = self.getPrefix(self.ip_prefix, self.ip_mask)
+        self.ip_prefix, self.ip_mask = IP.splitAddressMask(self.address)
+        self.ip_prefix = IP.getPrefix(self.ip_prefix, self.ip_mask)
 
         # Check if successfully parsed prefix
         if self.ip_prefix is None or self.ip_mask is None:
@@ -129,7 +130,7 @@ class HappyNetworkAddress(HappyNetwork, HappyNode):
             interface_id = self.getNodeInterfaceFromLink(link_id, node_id)
             options["interface"] = interface_id
 
-            if self.isIpv6(self.address):
+            if IP.isIpv6(self.address):
                 nid = self.getInterfaceId(interface_id, node_id)
             else:
                 nid = self.getNextNetworkIPv4Id(self.ip_prefix, self.network_id)

@@ -30,6 +30,7 @@ import sys
 
 from happy.ReturnMsg import ReturnMsg
 from happy.Utils import *
+from happy.utils.IP import IP
 from happy.HappyNode import HappyNode
 from happy.HappyNetwork import HappyNetwork
 import happy.HappyNodeDelete
@@ -143,13 +144,13 @@ class HappyNodeRoute(HappyNode, HappyNetwork):
             self.exit()
 
         # Check for mix IP addresses
-        if self.isIpAddress(self.to) and self.isIpAddress(self.via) and self.isIpv6(self.to) != self.isIpv6(self.via):
+        if IP.isIpAddress(self.to) and IP.isIpAddress(self.via) and IP.isIpv6(self.to) != IP.isIpv6(self.via):
             emsg = "Mixing addresses %s and %s." % (self.to, self.via)
             self.logger.error("[%s] HappyNodeRoute: %s" % (self.node_id, emsg))
             self.exit()
 
         # Check if destination is a node
-        if self.to != "default" and not self.isIpAddress(self.to):
+        if self.to != "default" and not IP.isIpAddress(self.to):
             if not self._nodeExists(self.to):
                 emsg = "Don't know what %s to-address is. If it is a node, it can't be found." % (self.to)
                 self.logger.error("[localhost] HappyNodeRoute: %s" % (emsg))
@@ -160,13 +161,13 @@ class HappyNodeRoute(HappyNode, HappyNetwork):
                 self.logger.error("[localhost] HappyNodeRoute: %s" % (emsg))
                 self.exit()
 
-        if self.isIpAddress(self.to):
-            self.to = self.paddingZeros(self.to)
+        if IP.isIpAddress(self.to):
+            self.to = IP.paddingZeros(self.to)
 
         # Check if gateway is a node
-        if self.isIpAddress(self.via):
+        if IP.isIpAddress(self.via):
             self.via_address = self.via
-            self.via_address = self.paddingZeros(self.via_address)
+            self.via_address = IP.paddingZeros(self.via_address)
             return
 
         if self._nodeInterfaceExists(self.via):
@@ -215,13 +216,13 @@ class HappyNodeRoute(HappyNode, HappyNetwork):
             return
 
         else:
-            if not self.isIpAddress(self.prefix):
+            if not IP.isIpAddress(self.prefix):
                 emsg = "Prefix %s is not a valid IP address."
                 self.logger.error("[localhost] HappyNodeRoute: %s" % (emsg))
                 self.exit()
 
-            self.ip_prefix, self.ip_mask = self.splitAddressMask(self.prefix)
-            self.prefix = self.getPrefix(self.ip_prefix, self.ip_mask)
+            self.ip_prefix, self.ip_mask = IP.splitAddressMask(self.prefix)
+            self.prefix = IP.getPrefix(self.ip_prefix, self.ip_mask)
 
             gateway_addresses = self.getNodeAddressesOnNetworkOnPrefix(common_networks[0], self.prefix, self.via)
 
@@ -279,7 +280,7 @@ class HappyNodeRoute(HappyNode, HappyNetwork):
             self.__call_add_route(4)
             self.__call_add_route(6)
         else:
-            if self.isIpv6(self.to) or self.isIpv6(self.via_address):
+            if IP.isIpv6(self.to) or IP.isIpv6(self.via_address):
                 self.__call_add_route(6)
             else:
                 self.__call_add_route(4)
@@ -307,7 +308,7 @@ class HappyNodeRoute(HappyNode, HappyNetwork):
             self.__call_delete_route(4)
             self.__call_delete_route(6)
         else:
-            if self.isIpv6(self.to) or self.isIpv6(self.via_address):
+            if IP.isIpv6(self.to) or IP.isIpv6(self.via_address):
                 self.__call_delete_route(6)
             else:
                 self.__call_delete_route(4)
@@ -353,9 +354,9 @@ class HappyNodeRoute(HappyNode, HappyNetwork):
         return False
 
     def __nodeRouteExistsViaAddress(self, to, via):
-        via = self.paddingZeros(via)
+        via = IP.paddingZeros(via)
         if to != 'default':
-            to = self.paddingZeros(to)
+            to = IP.paddingZeros(to)
 
         # IPv4
         cmd = "ip route"
@@ -369,7 +370,7 @@ class HappyNodeRoute(HappyNode, HappyNetwork):
                     continue
 
                 if to == 'default':
-                    if l[0] == to and l[1] == "via" and self.paddingZeros(l[2]) == via:
+                    if l[0] == to and l[1] == "via" and IP.paddingZeros(l[2]) == via:
                         if self.route_table is not None:
                             if self.nodeIpv4TableExist(self.node_id) is True:
                                 return True
@@ -377,7 +378,7 @@ class HappyNodeRoute(HappyNode, HappyNetwork):
                             return True
 
                 else:
-                    if self.paddingZeros(l[0]) == to and l[1] == "via" and self.paddingZeros(l[2]) == via:
+                    if IP.paddingZeros(l[0]) == to and l[1] == "via" and IP.paddingZeros(l[2]) == via:
                         if self.route_table is not None:
                             if self.nodeIpv4TableExist(self.node_id) is True:
                                 return True
@@ -394,14 +395,14 @@ class HappyNodeRoute(HappyNode, HappyNetwork):
                 if len(l) < 3:
                     continue
 
-                if self.paddingZeros(l[0]) == to and l[1] == "via" and self.paddingZeros(l[2]) == via:
+                if IP.paddingZeros(l[0]) == to and l[1] == "via" and IP.paddingZeros(l[2]) == via:
                     return True
 
         return False
 
     def __nodeRouteExistsViaDevice(self, to, dev):
         if to != 'default':
-            to = self.paddingZeros(to)
+            to = IP.paddingZeros(to)
 
         # IPv4
         cmd = "ip route"
@@ -422,7 +423,7 @@ class HappyNodeRoute(HappyNode, HappyNetwork):
                         return True
 
                 else:
-                    if self.paddingZeros(l[0]) == to and l[1] == "dev" and l[2] == dev:
+                    if IP.paddingZeros(l[0]) == to and l[1] == "dev" and l[2] == dev:
                         if self.route_table is not None:
                             if self.nodeIpv4TableExist(self.node_id) is True:
                                 return True
@@ -439,7 +440,7 @@ class HappyNodeRoute(HappyNode, HappyNetwork):
                 if len(l) < 3:
                     continue
 
-                if self.paddingZeros(l[0]) == to and l[1] == "dev" and l[2] == dev:
+                if IP.paddingZeros(l[0]) == to and l[1] == "dev" and l[2] == dev:
                     return True
 
         return False

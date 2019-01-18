@@ -30,6 +30,7 @@ import time
 
 from happy.ReturnMsg import ReturnMsg
 from happy.Utils import *
+from happy.utils.IP import IP
 from happy.HappyNode import HappyNode
 import happy.HappyNodeDelete
 import happy.HappyDNS
@@ -95,7 +96,7 @@ class HappyNodeAdd(HappyNode):
             self.exit()
 
         # Check if dot is in the name
-        if self.isDomainName(self.node_id):
+        if IP.isDomainName(self.node_id):
             emsg = "Using . (dot) in the name is not allowed."
             self.logger.error("[localhost] HappyNodeAdd: %s" % (emsg))
             self.exit()

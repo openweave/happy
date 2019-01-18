@@ -30,6 +30,7 @@ import sys
 
 from happy.ReturnMsg import ReturnMsg
 from happy.Utils import *
+from happy.utils.IP import IP
 from happy.HappyNetwork import HappyNetwork
 import happy.HappyNetworkAddress
 import happy.HappyNetworkDelete
@@ -89,7 +90,7 @@ class HappyNetworkAdd(HappyNetwork):
             self.exit()
 
         # Check if dot is in the name
-        if self.isDomainName(self.network_id):
+        if IP.isDomainName(self.network_id):
             emsg = "Using . (dot) in the name is not allowed."
             self.logger.error("[localhost] HappyNetworkAdd: %s" % (emsg))
             self.exit()
