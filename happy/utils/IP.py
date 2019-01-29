@@ -93,18 +93,91 @@ class IP:
 
     @staticmethod
     def prefixMatchAddress(prefix, addr):
+        """This function attempts to match the specified network prefix against the provided address.
+
+        Args:
+           prefix (str): A string containing the IPv4 or IPv6 prefix, in slash notation, to match against 'addr'.
+           addr (str): A string containing the IPv4 or IPv6 address against which 'prefix' will be matched.
+
+        Returns:
+           bool. The return code::
+
+              True  -- The prefix matches the address.
+              False -- The prefix does not match the address.
+        """
+
+        # If there is no prefix, then the match can never succeed.
+
         if prefix is None:
             return False
 
+        # Split the address into prefix and mask portions.
+        
         aprefix, amask = IP.splitAddressMask(prefix)
-        aprefix = IP.dropZeros(aprefix)
 
-        if len(aprefix) > len(addr):
+        # Ensure like address families are being compared between the
+        # prefix and address. If not, the match can never succeed.
+
+        if ((IP.isIpv4(aprefix) and not IP.isIpv4(addr)) or
+            (IP.isIpv6(aprefix) and not IP.isIpv6(addr))):
             return False
 
-        plen = len(aprefix)
+        # Perform address family-specific matching.
 
-        return aprefix[:plen] == addr[:plen]
+        if (IP.isIpv6(aprefix)):
+            return IP.__ipv6PrefixMatchAddress(aprefix, amask, addr)
+        elif (IP.isIpv4(aprefix)):
+            return IP.__ipv4PrefixMatchAddress(aprefix, amask, addr)
+        else:
+            return False
+
+
+    @staticmethod
+    def __ipv4PrefixMatchAddress(prefix, mask, addr):
+        # To check for a match, convert the prefix, mask, and address
+        # into binary values and check that the logical and of the
+        # prefix with the mask matches the logical and of the address
+        # and the mask.
+
+        bmask = IP.__ipv4MaskStringToBinary(mask)
+
+        bprefix = IP.__ipv4AddressStringToBinary(prefix)
+
+        baddr = IP.__ipv4AddressStringToBinary(addr)
+
+        matched = ((bprefix & bmask) == (baddr & bmask))
+
+        return matched
+
+
+    @staticmethod
+    def __ipv6PrefixMatchAddress(prefix, mask, addr):
+        prefix = IP.dropZeros(prefix)
+
+        if len(prefix) > len(addr):
+            return False
+
+        plen = len(prefix)
+
+        return prefix[:plen] == addr[:plen]
+
+
+    @staticmethod
+    def __ipv4AddressStringToBinary(addr):
+        baddr = 0
+        
+        for index, octet in list(enumerate(reversed(addr.split(".")))):
+            baddr = baddr + ((int(octet) & 0xFF) << (index * 8))
+
+        return baddr
+
+
+    @staticmethod
+    def __ipv4MaskStringToBinary(mask):
+        bmask = ((2**32) - 1) ^ ((2**32) - 1) >> int(mask)
+
+        return bmask
+
 
     @staticmethod
     def getPrefix(addr, mask=None):
