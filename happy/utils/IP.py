@@ -134,10 +134,16 @@ class IP:
 
     @staticmethod
     def __ipv4PrefixMatchAddress(prefix, mask, addr):
-        # To check for a match, convert the prefix, mask, and address
-        # into binary values and check that the logical and of the
-        # prefix with the mask matches the logical and of the address
-        # and the mask.
+        # First, canonicalize the address and prefix
+
+        prefix = IP.__ipv4Canonicalize(prefix)
+
+        addr = IP.__ipv4Canonicalize(prefix)
+
+        # Then, to check for a match, convert the prefix, mask, and
+        # address into binary values and check that the logical and of
+        # the prefix with the mask matches the logical and of the
+        # address and the mask.
 
         bmask = IP.__ipv4MaskStringToBinary(mask)
 
@@ -160,6 +166,34 @@ class IP:
         plen = len(prefix)
 
         return prefix[:plen] == addr[:plen]
+
+
+    @staticmethod
+    def __ipv4Canonicalize(addr):
+        """This function attempts to canonicalize an IPv4 address (four completely-specified octets) or prefix (less than four octets) into a four octet, dotted decimal string representation by appending the appropriate number of zeroes (.0) to the address. Note, an empty string is canonicalized into the any address (0.0.0.0).
+
+        Args:
+           addr (str): A string containing the IPv4 address or prefix to canonicalize
+
+        Returns:
+           str. The canonicalized IPv4 address or prefix.
+        """
+        
+        if len(addr) > 0:
+            octets = addr.count(".") + 1
+        else:
+            octets = 0
+
+        missing = 4 - octets
+
+        if missing > 0:
+            padding = ".".join(["0"] * missing)
+            if octets > 0:
+                addr += "." + padding
+            else:
+                addr += padding
+
+        return addr
 
 
     @staticmethod
