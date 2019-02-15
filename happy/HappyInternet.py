@@ -445,7 +445,6 @@ class HappyInternet(HappyNode, HappyNodeRoute):
                     self.__create_isp()
                     self.__connect_internet_to_isp()
                     self.__ctrl_isp_internet_interface()
-                    self.__nmconf()
                     self.__assign_isp_internet_address()
                     self.__nat_host()
                 self.__get_isp_from_pool()
