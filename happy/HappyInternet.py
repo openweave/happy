@@ -86,12 +86,13 @@ class HappyInternet(HappyNode, HappyNodeRoute):
         self.seed = int(opts["seed"])
         self.prefix = '172.16.' + opts["seed"] + '.'
 
-        if "weave_service_address" in os.environ.keys():
-            tier = os.environ['weave_service_address'].split(".")[3][0:3]
-            self.isp_id = tier + self.isp_id
-        else:
-            tier = "test"
-            self.isp_id = tier + self.isp_id
+        if self.add:
+            if "weave_service_address" in os.environ.keys():
+                tier = os.environ['weave_service_address'].split(".")[3][0:3]
+                self.isp_id = tier + self.isp_id
+            else:
+                tier = "test"
+                self.isp_id = tier + self.isp_id
 
         self.mask = "24"
         self.host_addr = self.prefix + "1"
@@ -324,6 +325,8 @@ class HappyInternet(HappyNode, HappyNodeRoute):
             isp_dic["isp_addr"] = self.isp_addr
             isp_dic["node_id"] = self.node_id
             isp_dic["isp_index"] = self.isp_index
+            isp_dic["isp"] = self.isp_id
+            isp_dic["iface"] = self.iface
             internet[self.isp_id] = isp_dic
             self.setGlobalInternet(internet)
         else:

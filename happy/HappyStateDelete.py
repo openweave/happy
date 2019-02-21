@@ -25,6 +25,7 @@
 import json
 import os
 import sys
+import subprocess
 
 from happy.ReturnMsg import ReturnMsg
 from happy.Utils import *
@@ -33,6 +34,7 @@ import happy.HappyNodeDelete
 import happy.HappyNetworkDelete
 import happy.HappyLinkDelete
 import happy.HappyNode
+import happy.HappyInternet
 from happy.HappyHost import HappyHost
 
 options = {}
@@ -193,8 +195,29 @@ class HappyStateDelete(HappyHost):
         self.__delete_host_bridges()
         self.__delete_host_links()
 
+    def __delete_internet(self):
+        """
+        delete internet isp interface
+        functionality similar to command: happy-internet -d ...
+        """
+        #get global config before it is deleted
+        self.global_config = self.getGlobal()
+        if "internet" in self.global_config:
+            internet_config = self.global_config["internet"]
+            for internet_value in internet_config.values():
+                options = happy.HappyInternet.option()
+                options["delete"] = True
+                options["iface"] = internet_value["iface"]
+                options["isp"] = internet_value["isp"]
+                options["seed"] = internet_value["isp_addr"].split(".")[2]
+                options["node_id"] = internet_value["node_id"]
+                hi = happy.HappyInternet.HappyInternet(options)
+                hi.start()
+
     def run(self):
         self.__pre_check()
+
+        self.__delete_internet()
 
         self.__delete_state()
 

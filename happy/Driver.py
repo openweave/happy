@@ -121,6 +121,9 @@ class StateLockManager(object):
 
 
 class Driver:
+    """
+    Driver init loads configuration base on conf/log_config.json and conf/main_config.json
+    """
     def __init__(self):
         self.state = {}
         self.isp_state = {}
