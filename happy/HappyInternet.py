@@ -85,15 +85,6 @@ class HappyInternet(HappyNode, HappyNodeRoute):
         self.isp_id = opts["isp"]
         self.seed = int(opts["seed"])
         self.prefix = '172.16.' + opts["seed"] + '.'
-
-        if self.add:
-            if "weave_service_address" in os.environ.keys():
-                tier = os.environ['weave_service_address'].split(".")[3][0:3]
-                self.isp_id = tier + self.isp_id
-            else:
-                tier = "test"
-                self.isp_id = tier + self.isp_id
-
         self.mask = "24"
         self.host_addr = self.prefix + "1"
         self.isp_internet_id = self.isp_id + "1"
