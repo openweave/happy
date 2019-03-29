@@ -146,11 +146,13 @@ endif
 	@echo "Remember to update PYTHONPATH for every environment that will use this package, thus run"
 	@echo "export PYTHONPATH=$$PYTHONPATH:"$(HAPPY_PATH)/lib/python$(PYTHON_VERSION)/site-packages/""
 	@echo
+	$(MAKE) link
 
 uninstall-path:
 ifeq ($(HAPPY_PATH),)
 	@echo Variable HAPPY_PATH not set. && false
 endif
+	$(MAKE) unlink
 	rm -rf $(HAPPY_PATH)
 
 distribution-build: clean

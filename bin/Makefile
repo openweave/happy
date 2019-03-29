@@ -15,12 +15,22 @@
 #    limitations under the License.
 #
 
-DEST=/usr/local/bin
-SUDO=sudo
+
+ifeq ($(HAPPY_PATH),)
+	DESTROOT=/usr/local
+	SUDO?=sudo
+else
+	DESTROOT=$(HAPPY_PATH)
+	SUDO?=
+endif
+
+DEST=$(DESTROOT)/bin
+
 PEP8_LINT ?= pep8
 PEP8_LINT_ARGS ?= --max-line-length=132
 
 link:
+	mkdir -p $(DEST)
 	for f in happy-*.py; do \
 		$(SUDO) cp $$f $(DEST)/"$${f%.*}"; \
 		$(SUDO) chmod o+rx $(DEST)/"$${f%.*}"; \
