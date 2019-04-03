@@ -31,6 +31,7 @@ SUDO               ?= sudo
 
 DPKG_PREREQUISITES := \
     bridge-utils      \
+    net-tools         \
     python-lockfile   \
     python-psutil     \
     python-setuptools \
