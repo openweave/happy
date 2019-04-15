@@ -34,8 +34,8 @@ if __name__ == "__main__":
     options = happy.HappyState.option()
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hqs:gljuia",
-                                   ["help", "quiet", "save=", "graph", "log", "json", "unlock", "id", "all"])
+        opts, args = getopt.getopt(sys.argv[1:], "hqs:gljuian:",
+                                   ["help", "quiet", "save=", "graph", "log", "json", "unlock", "id", "all", "node="])
 
     except getopt.GetoptError as err:
         print happy.HappyState.HappyState.__doc__
@@ -71,8 +71,14 @@ if __name__ == "__main__":
         elif o in ("-a", "--all"):
             options["all"] = True
 
+        elif o in ("-n", "--node"):
+            options["node"] = a
+
         else:
             assert False, "unhandled option"
+
+    if len(args) == 1:
+        options["node"] = args[0]
 
     cmd = happy.HappyState.HappyState(options)
     cmd.start()

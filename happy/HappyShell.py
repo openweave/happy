@@ -114,10 +114,26 @@ class HappyShell(HappyNode):
         if self.command:
             cmd += self.command
         else:
-            cmd += 'bash --norc'
+            netns_id = self.uniquePrefix(self.node_id)
+            rc_file = "/tmp/" + netns_id + ".rc"
+            cmd += 'bash --rcfile ' + rc_file
+
+        # write data into rc file and use it during happy-shell
+        # example cmd: "sudo ip netns exec happy031 bash --rcfile /usr/local/google/home/jexie/1.rc"
+        weave_test_options = "WEAVE_TEST_OPTIONS="
+        weave_id = self.getWeaveNodeId(self.node_id)
+        weave_id_str = "--node-id " +  weave_id
+        weave_test_options = weave_test_options + "'" + weave_id_str + "'"
+        ps1_line = "PS1=" + "'" + env["PS1"] + "'"
+        with open(rc_file, 'w') as node_rc:
+            node_rc.write(ps1_line + "\n")
+            node_rc.write(weave_test_options + "\n")
 
         self.result = self.CallAtNode(self.node_id, cmd, env, output='shell')
 
         self.__post_check()
 
+        ## delete only if rc file exists ##
+        if os.path.exists(rc_file):
+            os.remove(rc_file)
         return ReturnMsg(0)

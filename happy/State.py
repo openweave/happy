@@ -851,3 +851,61 @@ class State(Driver):
         global_record = self.getGlobal(state)
         if "DNS" in global_record.keys():
             del global_record["DNS"]
+
+    def getWeaveInfo(self, state=None):
+        """
+        return weave information from topology
+        """
+        state = self.getState(state)
+        if "weave" not in state.keys():
+            state["weave"] = {}
+        return state["weave"]
+
+    def getWeaveNodeInfo(self, node, state=None):
+        """
+        return weave node information
+        example for one weave node result:
+        {
+            "eui64": "cd-e8-d1-d0-5a-ed-11-e9",
+            "iid": "cfe8:d1d0:5aed:11e9",
+            "pairing_code": "KIQKVL",
+            "weave_node_id": "cde8d1d05aed11e9"
+        }
+        """
+        state = self.getWeaveInfo()
+        if "node" not in state.keys():
+            return None
+        elif node not in state["node"].keys():
+            return None
+        else:
+            return state["node"][node]
+
+    def getWeaveNodeId(self, node, state=None):
+        """
+        return weave node id
+        """
+        weave_node_info = self.getWeaveNodeInfo(node, state)
+        if "weave_node_id" not in weave_node_info:
+            return None
+        else:
+            return weave_node_info["weave_node_id"]
+
+
+    def getWeaveFabric(self, state=None):
+        state = self.getWeaveInfo()
+        if "fabric" not in state.keys():
+            return None
+        else:
+            return state["fabric"]
+
+    def getNodeInfo(self, node, state=None):
+        """
+        get all information of a node
+        """
+        happy_node_info = self.getNodes()[node]
+        weave_node_info = self.getWeaveNodeInfo(node)
+
+        node_info = {"happy": happy_node_info,
+                     "weave": weave_node_info
+                     }
+        return node_info
