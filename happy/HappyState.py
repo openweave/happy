@@ -54,6 +54,7 @@ options["json"] = False
 options["unlock"] = False
 options["id"] = False
 options["all"] = False
+options["node"] = None
 
 
 def option():
@@ -66,6 +67,7 @@ class HappyState(State):
 
     happy-state [-h --help] [-q --quiet] [-s --save <JSON_FILE>] [-g --graph]
                 [-l --logs] [-j --json] [-u --unlock] [-i --id] [-a --all]
+                [-n --node <node name>]
 
         -s --save   Saves the current network topology state in a JSON file.
         -g --graph  Generates a network topology graph.
@@ -75,6 +77,7 @@ class HappyState(State):
         -u --unlock Force unlock the Happy state file (~/.happy_state.json).
         -i --id     Displays all known state IDs.
         -a --all    Displays the network topology state for all known states.
+        -n --node   Displays all information for a node
 
     Examples:
     $ happy-state
@@ -102,13 +105,14 @@ class HappyState(State):
         self.unlock_state = opts["unlock"]
         self.show_id = opts["id"]
         self.all = opts["all"]
+        self.node = opts["node"]
 
     def __pre_check(self):
         pass
 
     def __print_data_state(self):
         if self.quiet or self.graph or self.save or self.log or self.json or \
-           self.unlock_state or self.show_id:
+           self.unlock_state or self.show_id or self.node:
             return
 
         self.__print_own_state()
@@ -177,6 +181,25 @@ class HappyState(State):
 
         with open(self.save, 'w') as jfile:
             jfile.write(json_data)
+
+    def __print_node_state(self):
+        """print_node_state
+        print single node information
+        """
+        if self.node is None:
+            return
+        node_info = {}
+
+        print
+
+        print "State Name: {}".format(self.getStateId())
+
+        print "Node: {}".format(self.node)
+
+        node_info = self.getNodeInfo(self.node)
+        node_json_data = json.dumps(node_info, sort_keys=True, indent=2)
+        print node_json_data
+
 
     def __graph_state(self):
         if self.graph is None:
@@ -363,6 +386,7 @@ class HappyState(State):
         self.__show_state_id()
         self.__save_state()
         self.__graph_state()
+        self.__print_node_state()
         self.__show_logs()
 
         self.__post_check()
