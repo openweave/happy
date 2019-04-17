@@ -851,3 +851,30 @@ class State(Driver):
         global_record = self.getGlobal(state)
         if "DNS" in global_record.keys():
             del global_record["DNS"]
+
+    def getExtensionState(self, state=None):
+        """
+        return a list of states created by happy plugins,
+        "weave" is one of the extension created by happy plugins.
+        """
+        knownStateKeys = set(['identifiers', 'link', 'node', 'netns', 'network'])
+        state = self.getState(state)
+        filteredState = dict([i for i in state.iteritems() if i[0] not in knownStateKeys])
+        return filteredState
+
+    def getNodeInfo(self, node, state=None, happy_only=False):
+        """
+        get all information of a node
+        happy_only: only display happy states, not including extension states like weave
+        """
+        happy_node_info = self.getNodes()[node]
+        node_info = {"happy": happy_node_info}
+
+        # get extension state including weave
+        if not happy_only:
+            for i in self.getExtensionState(state).iteritems():
+                extState = self.getNodes(i[1])
+                if extState and node in extState:
+                    node_info[i[0]] = extState[node]
+
+        return node_info
