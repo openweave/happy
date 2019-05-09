@@ -70,15 +70,15 @@ class HappyState(State):
                 [-l --logs] [-j --json] [-u --unlock] [-i --id] [-a --all]
                 [-n --node <node name>]
 
-        -s --save   Saves the current network topology state in a JSON file.
-        -g --graph  Generates a network topology graph.
-        -l --logs   Display Happy run-time logs. Run in a separate terminal
-                    window to observe logs while using Happy.
-        -j --json   Display the current state in JSON format.
-        -u --unlock Force unlock the Happy state file (~/.happy_state.json).
-        -i --id     Displays all known state IDs.
-        -a --all    Displays the network topology state for all known states.
-        -n --node   Displays all information for a node
+        -s --save      Saves the current network topology state in a JSON file.
+        -g --graph     Generates a network topology graph.
+        -l --logs      Display Happy run-time logs. Run in a separate terminal
+                       window to observe logs while using Happy.
+        -j --json      Display the current state in JSON format.
+        -u --unlock    Force unlock the Happy state file (~/.happy_state.json).
+        -i --id        Displays all known state IDs.
+        -a --all       Displays the network topology state for all known states.
+        -n --node      Displays all information for a node
         -e --extension Displays happy extension value (eg. weave-fabric-id)
 
     Examples:
@@ -210,11 +210,12 @@ class HappyState(State):
         if self.extension is None:
             return
 
-        print "happy topology extension {} value: ".format(self.extension)
+        print "{} extension state:".format(self.extension)
 
         ext_value = self.getExtensionValue(self.extension)
 
-        print ext_value
+        ext_json_data = json.dumps(ext_value, sort_keys=True, indent=2)
+        print ext_json_data
 
     def __graph_state(self):
         if self.graph is None:
