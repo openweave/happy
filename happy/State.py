@@ -878,3 +878,17 @@ class State(Driver):
                     node_info[i[0]] = extState[node]
 
         return node_info
+
+    def getExtensionValue(self, extension_name, state=None):
+        """
+        extension_name example: weave-fabric-id
+        """
+        ext_look_list = extension_name.split("-")
+        ext_states = self.getExtensionState(state)
+        for item in ext_look_list:
+            if item not in ext_states:
+                return None
+            else:
+                ext_states = ext_states[item]
+                ext_value = ext_states
+        return ext_value

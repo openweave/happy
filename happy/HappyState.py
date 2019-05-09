@@ -55,6 +55,7 @@ options["unlock"] = False
 options["id"] = False
 options["all"] = False
 options["node"] = None
+options["extension"] = None
 
 
 def option():
@@ -69,15 +70,16 @@ class HappyState(State):
                 [-l --logs] [-j --json] [-u --unlock] [-i --id] [-a --all]
                 [-n --node <node name>]
 
-        -s --save   Saves the current network topology state in a JSON file.
-        -g --graph  Generates a network topology graph.
-        -l --logs   Display Happy run-time logs. Run in a separate terminal
-                    window to observe logs while using Happy.
-        -j --json   Display the current state in JSON format.
-        -u --unlock Force unlock the Happy state file (~/.happy_state.json).
-        -i --id     Displays all known state IDs.
-        -a --all    Displays the network topology state for all known states.
-        -n --node   Displays all information for a node
+        -s --save      Saves the current network topology state in a JSON file.
+        -g --graph     Generates a network topology graph.
+        -l --logs      Display Happy run-time logs. Run in a separate terminal
+                       window to observe logs while using Happy.
+        -j --json      Display the current state in JSON format.
+        -u --unlock    Force unlock the Happy state file (~/.happy_state.json).
+        -i --id        Displays all known state IDs.
+        -a --all       Displays the network topology state for all known states.
+        -n --node      Displays all information for a node
+        -e --extension Displays happy extension value (eg. weave-fabric-id)
 
     Examples:
     $ happy-state
@@ -106,13 +108,14 @@ class HappyState(State):
         self.show_id = opts["id"]
         self.all = opts["all"]
         self.node = opts["node"]
+        self.extension = opts["extension"]
 
     def __pre_check(self):
         pass
 
     def __print_data_state(self):
         if self.quiet or self.graph or self.save or self.log or self.json or \
-           self.unlock_state or self.show_id or self.node:
+           self.unlock_state or self.show_id or self.node or self.extension:
             return
 
         self.__print_own_state()
@@ -200,6 +203,19 @@ class HappyState(State):
         node_json_data = json.dumps(node_info, sort_keys=True, indent=2)
         print node_json_data
 
+    def __print_extension_value(self):
+        """print happy extension value
+        example: weave-fabric-id
+        """
+        if self.extension is None:
+            return
+
+        print "{} extension state:".format(self.extension)
+
+        ext_value = self.getExtensionValue(self.extension)
+
+        ext_json_data = json.dumps(ext_value, sort_keys=True, indent=2)
+        print ext_json_data
 
     def __graph_state(self):
         if self.graph is None:
@@ -387,6 +403,7 @@ class HappyState(State):
         self.__save_state()
         self.__graph_state()
         self.__print_node_state()
+        self.__print_extension_value()
         self.__show_logs()
 
         self.__post_check()
