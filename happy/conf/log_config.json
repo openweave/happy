@@ -14,7 +14,7 @@
             "level": "DEBUG",
             "class" : "logging.handlers.RotatingFileHandler",
             "formatter": "standard",
-            "filename":"%(log_directory)s/%(state_id)s_debug_log.txt",
+            "filename":"%(happy_log_dir)s/%(state_id)s_debug_log.txt",
             "maxBytes": "5242880"
         },
         "stream": {

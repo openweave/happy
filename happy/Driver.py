@@ -195,6 +195,28 @@ class Driver:
             print "Failed to get state id from %s." % (self.main_conf_file)
             sys.exit(1)
 
+        # default_happy_log_dir will be default dir for happy log
+        # happy_log_environ is os environment variable passed from test-engine
+        try:
+            self.default_happy_log_dir = self.main_conf["default_happy_log_dir"]
+        except Exception:
+            print "Failed to find default_happy_log dir in the main configuration file %s." \
+                % (self.main_conf_file)
+            sys.exit(1)
+
+        try:
+            self.happy_log_environ = "HAPPY_LOG_DIR"
+        except Exception:
+            print "Failed to find happy log environment variable name in the main configuration file %s." \
+                % (self.main_conf_file)
+            sys.exit(1)
+
+        try:
+            self.happy_log_dir = self.getHappyLogDir()
+        except Exception:
+            print "Failed to get happy log dir from %s." % (self.main_conf_file)
+            sys.exit(1)
+
         try:
             self.state_file_prefix = self.main_conf["state_file_prefix"]
             self.state_file_suffix = self.main_conf["state_file_suffix"]
@@ -233,8 +255,9 @@ class Driver:
         try:
             confDict = dict(self.main_conf)
             confDict['state_id'] = self.state_id
-            self.log_conf['handlers']['file']['filename'] = self.log_conf['handlers']['file']['filename'] % confDict
+            confDict['happy_log_dir'] = self.happy_log_dir
 
+            self.log_conf['handlers']['file']['filename'] = self.log_conf['handlers']['file']['filename'] % confDict
             self.log_conf['handlers']['file']['level'] = logging.getLevelName(self.log_level_file)
             self.log_conf['handlers']['stream']['level'] = logging.getLevelName(self.log_level_console)
 
@@ -294,9 +317,10 @@ class Driver:
 
             confDict = dict(self.main_conf)
             confDict['state_id'] = self.state_id
+            confDict['happy_log_dir'] = self.happy_log_dir
 
-            if not os.path.exists(confDict["log_directory"]):
-                os.makedirs(confDict["log_directory"])
+            if not os.path.exists(self.happy_log_dir):
+                os.makedirs(self.happy_log_dir)
 
             self.process_log_prefix = self.main_conf["process_log_prefix"] % confDict
 
@@ -589,3 +613,9 @@ class Driver:
             return os.environ[self.state_environ]
         else:
             return self.default_state
+
+    def getHappyLogDir(self):
+        if self.happy_log_environ in os.environ.keys():
+            return os.environ[self.happy_log_environ]
+        else:
+            return self.default_happy_log_dir
