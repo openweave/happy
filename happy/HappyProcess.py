@@ -220,9 +220,17 @@ class HappyProcess(HappyHost):
             self.__signal_procs(alive, "SIGKILL")
 
     def GetProcessByName(self, name):
-        # TODO: Sometimes pid is there, but psutil cannot get this process, need to fix it.
         processlist = []
-        for pid in psutil.get_pid_list():
+        # At python.psutil 2.0.0, psutil.get_pid_list() has been replaced
+        # by psutil.pids(). Try to access the new one first,
+        # If that throws, try the old one.
+
+        try:
+            pids = psutil.pids()
+        except:
+            pids = psutil.get_pid_list()
+
+        for pid in pids:
             try:
                 p = psutil.Process(pid)
                 if p.name == name:
