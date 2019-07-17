@@ -261,32 +261,53 @@ class HappyProcessStart(HappyNode, HappyProcess):
             cmd = self.stripRunAsRoot(cmd)
             need_internal_sudo = False
 
-        env_vars = ""
-        for key, value in self.env.items():
-            env_vars += key + "=" + value + " "
+        env_vars_list = []
+        cmd_list_prefix = []
+        need_bash = False
 
-        self.logger.debug("HappyProcessStart with env: > %s" % (env_vars))
+        if "bash -c" in cmd:
+            tmp = cmd.split("bash -c")
+            need_bash = True
+            cmd_list_prefix = tmp[0].split()
+            cmd = tmp[1]
+
+        for key, value in self.env.items():
+            tmp = ""
+            try:
+                tmp = "" + key + "=" + value
+                env_vars_list.append(tmp)
+            except:
+                self.logger.error("Failed to serialize environment variable %s" % (key));
+
+        self.logger.debug("HappyProcessStart with env: > %s" % (env_vars_list))
 
         if self.strace:
-            strace = "strace -tt -o " + self.strace_file + " "
-            for var in env_vars.split():
-                strace += ("-E " + var + " ")
-            cmd = strace + cmd
+            cmd_list_prefix = ["strace", "-tt", "-o", self.strace_file] + cmd_list_prefix
+            tmp = []
+            for i in env_vars_list:
+                tmp.append("-E")
+                tmp.append(i)
+            env_vars_list = tmp
+
         elif need_internal_sudo:
-            cmd = env_vars + cmd
-        elif len(env_vars):
-            cmd = "bash -c " + env_vars + cmd
+            pass
+        elif len(env_vars_list):
+            need_bash = True
 
         if need_internal_sudo:
+            tmp = "ls"
             if self.rootMode:
-                cmd = self.runAsRoot(cmd)
+                tmp = self.runAsRoot(tmp)
             else:
-                cmd = self.runAsUser(cmd)
+                tmp = self.runAsUser(tmp)
+            cmd_list_prefix = tmp.split()[:-1] + cmd_list_prefix
 
         if self.node_id:
-            cmd = "ip netns exec " + self.uniquePrefix(self.node_id) + " " + cmd
+            cmd_list_prefix = ["ip", "netns", "exec", self.uniquePrefix(self.node_id)] + cmd_list_prefix
 
-        cmd = self.runAsRoot(cmd)
+        tmp = 'ls'
+        tmp = self.runAsRoot(tmp)
+        cmd_list_prefix = tmp.split()[:-1] + cmd_list_prefix
 
         try:
             self.fout = open(self.output_file, "w", 0)
@@ -300,15 +321,22 @@ class HappyProcessStart(HappyNode, HappyProcess):
         popen = None
 
         try:
-
             cmd_list = []
-            if "bash -c" in cmd:
-                tmp = cmd.split("bash -c")
-                cmd_list = tmp[0].split()
-                cmd_list = cmd_list + ['bash', '-c'] + [tmp[1]]
+            if need_bash:
+                env_vars_list = []
+                for key, value in self.env.items():
+                  tmp = ""
+                  try:
+                      tmp = "" + key + '="' + value.replace('\\','\\\\').replace('"','\\"') +'"'
+                      env_vars_list.append(tmp)
+                  except:
+                      self.logger.error("Failed to serialize environment variable %s" % (key));
+                cmd = " ".join(env_vars_list) + ' ' + cmd
+                cmd_list = cmd_list_prefix + ["bash", "-c", cmd]
             else:
-                cmd_list = cmd.split()
+                cmd_list = cmd_list_prefix + env_vars_list + cmd.split()
 
+            self.logger.debug("[%s] HappyProcessStart: executing command list %s" % (self.node_id, cmd_list))
             popen = subprocess.Popen(cmd_list, stdin=subprocess.PIPE, stdout=self.fout)
             self.child_pid = popen.pid
             emsg = "running daemon %s (PID %d)" % (self.tag, self.child_pid)
