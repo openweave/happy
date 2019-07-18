@@ -295,19 +295,16 @@ class HappyProcessStart(HappyNode, HappyProcess):
             need_bash = True
 
         if need_internal_sudo:
-            tmp = "ls"
             if self.rootMode:
-                tmp = self.runAsRoot(tmp)
+                tmp = self.getRunAsRootPrefixList()
             else:
-                tmp = self.runAsUser(tmp)
-            cmd_list_prefix = tmp.split()[:-1] + cmd_list_prefix
+                tmp = self.getRunAsUserPrefixList()
+            cmd_list_prefix = tmp + cmd_list_prefix
 
         if self.node_id:
             cmd_list_prefix = ["ip", "netns", "exec", self.uniquePrefix(self.node_id)] + cmd_list_prefix
 
-        tmp = 'ls'
-        tmp = self.runAsRoot(tmp)
-        cmd_list_prefix = tmp.split()[:-1] + cmd_list_prefix
+        cmd_list_prefix = self.getRunAsRootPrefixList() + cmd_list_prefix
 
         try:
             self.fout = open(self.output_file, "w", 0)
