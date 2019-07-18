@@ -544,23 +544,30 @@ class Driver:
     def CallAtNetworkForOutput(self, network_id, cmd, env=None):
         return self.CallAtNodeForOutput(network_id, cmd, env)
 
-    def runAsRoot(self, cmd):
+    def getRunAsRootPrefixList(self):
         if "SUDO" in os.environ.keys():
-            return os.environ["SUDO"] + " " + cmd
+            return [os.environ["SUDO"]]
         elif os.getuid() == 0:
             # We are already root
-            return cmd
+            return []
         else:
-            return "sudo " + cmd
+            return ["sudo"]
 
-    def runAsUser(self, cmd, username=None):
+
+    def runAsRoot(self, cmd):
+        return ' '.join(self.getRunAsRootPrefixList() + [cmd])
+
+    def getRunAsUserPrefixList(self, username=None):
         if username is None:
             username = getpass.getuser()
 
         if "SUDO" in os.environ.keys():
-            return "$SUDO -u " + username + " " + cmd
+            return [os.environ["SUDO"], "-u", username]
         else:
-            return "sudo -u " + username + " " + cmd
+            return ["sudo", "-u", username]
+
+    def runAsUser(self, cmd, username=None):
+        return ' '.join(self.getRunAsUserPrefixList(username=username) + [cmd])
 
     def uniquePrefix(self, txt, state=None):
         prefix = self.getStateId(state)
