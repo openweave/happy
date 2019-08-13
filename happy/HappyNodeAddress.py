@@ -31,6 +31,7 @@ from happy.ReturnMsg import ReturnMsg
 from happy.Utils import *
 from happy.utils.IP import IP
 from happy.HappyNode import HappyNode
+import json
 
 options = {}
 options["quiet"] = False
@@ -187,21 +188,30 @@ class HappyNodeAddress(HappyNode):
             self.removeNodeInterfaceAddress(self.node_id, self.interface, self.ip_address)
 
     def run(self):
-        with self.getStateLockManager():
+        if not self.add and not self.delete:
+            data_state = json.dumps(self.getNodeInterfaceAddresses(self.interface, self.node_id), sort_keys=True, indent=4)
 
-            self.__pre_check()
+            emsg = "virtual node: " + self.node_id + " addresses list for interface id: " + self.interface
 
-            if not self.done:
+            print emsg
+            print data_state
 
-                if self.add:
-                    self.__add_address()
-                else:
-                    self.__delete_address()
+        else:
+            with self.getStateLockManager():
 
-                self.__post_check()
+                self.__pre_check()
 
-                self.__update_state()
+                if not self.done:
+                    if not self.IsTapDevice(self.node_id):
+                        if self.add:
+                            self.__add_address()
+                        else:
+                            self.__delete_address()
 
-                self.writeState()
+                        self.__post_check()
+
+                    self.__update_state()
+
+                    self.writeState()
 
         return ReturnMsg(0)

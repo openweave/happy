@@ -235,12 +235,13 @@ class HappyNetworkRoute(HappyNetwork, HappyNode):
 
     def run(self):
         with self.getStateLockManager():
-
             self.__pre_check()
 
         self.__configure_nodes_routes()
-
-        self.__configure_gateway_routing()
+        # For TAP device, happy will not configure address/routing
+        # And it will be configured by LwIP stack in whatever process LwIP is running
+        if not self.IsTapDevice(self.node_id):
+            self.__configure_gateway_routing()
 
         with self.getStateLockManager():
 

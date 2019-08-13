@@ -231,10 +231,6 @@ class HappyNodeJoin(HappyLink, HappyNode, HappyNetwork):
         self.setNodeInterface(self.node_id, self.node_interface_name, new_node_interface)
 
     def __assign_network_addresses(self):
-        #  if node is a tap device, no need to assign IP to it.
-        if self.tap:
-            self.logger.error("HappyNodeJoin: {} is tap device, do not assign IP".format(self.node_id))
-            self.exit()
         network_prefixes = self.getNetworkPrefixes(self.network_id)
 
         for prefix in network_prefixes:
@@ -300,9 +296,8 @@ class HappyNodeJoin(HappyLink, HappyNode, HappyNetwork):
 
             self.writeState()
 
-        #  if node is a tap device, no need to assign IP to it.
-        if not self.tap:
-            self.__assign_network_addresses()
+        
+        self.__assign_network_addresses()
 
         self.__load_network_routes()
 

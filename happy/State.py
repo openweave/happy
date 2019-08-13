@@ -265,6 +265,28 @@ class State(Driver):
             return {}
         return node_record["route"]
 
+    def getNodeRoutePrefix(self, route_type, node_id=None, state=None):
+        """
+        getting node route prefix base on route type "v4" or "v6"
+        """
+        node_routes = self.getNodeRoutes(node_id, state)
+        for node_route in node_routes.keys():
+            if route_type in node_route:
+                return node_routes[node_route]["prefix"]
+        else:
+            return None
+
+    def getNodeRouteVia(self, route_type, node_id=None, state=None):
+        """
+        getting node route via node id base on route type "v4" or "v6"
+        """
+        node_routes = self.getNodeRoutes(node_id, state)
+        for node_route in node_routes.keys():
+            if route_type in node_route:
+                return node_routes[node_route]["via"]
+        else:
+            return None
+
     def getNodeRouteIds(self, node_id=None, state=None):
         node_routes = self.getNodeRoutes(node_id, state)
         return node_routes.keys()
@@ -892,3 +914,25 @@ class State(Driver):
                 ext_states = ext_states[item]
                 ext_value = ext_states
         return ext_value
+
+    def IsTapDevice(self, node_id, state=None):
+        """
+        check if a device is a tap device or not
+        if tap device, will not call netns command to add route
+        1. get links of a node
+        2. verify link is TAP or not
+        Happy only support one interface type now,
+        it is either tap device or regular linux socket device
+        """
+        node_links = self.getNodeLinkIds(node_id)
+        # no link_id for cloud node service-tun0 interface
+        if None in node_links:
+            node_links.remove(None)
+        for link in node_links:
+            if self.getLinkTap(link):
+                return True
+        else:
+            return False
+
+
+        
