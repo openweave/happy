@@ -138,7 +138,7 @@ class IP:
 
         prefix = IP.__ipv4Canonicalize(prefix)
 
-        addr = IP.__ipv4Canonicalize(prefix)
+        addr = IP.__ipv4Canonicalize(addr)
 
         # Then, to check for a match, convert the prefix, mask, and
         # address into binary values and check that the logical and of
