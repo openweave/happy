@@ -34,8 +34,8 @@ if __name__ == "__main__":
     options = happy.HappyNodeRoute.option()
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hi:qadt:v:p:s:e:",
-                                   ["help", "id=", "quiet", "add", "delete", "to=", "via=", "prefix=", "isp=", "seed="])
+        opts, args = getopt.getopt(sys.argv[1:], "hi:qadt:v:p:s:e:y:",
+                                   ["help", "id=", "quiet", "add", "delete", "to=", "via=", "prefix=", "isp=", "seed=", "type="])
 
     except getopt.GetoptError as err:
         print happy.HappyNodeRoute.HappyNodeRoute.__doc__
@@ -73,6 +73,9 @@ if __name__ == "__main__":
 
         elif o in ("-e", "--seed"):
             options["seed"] = True
+
+        elif o in ("-y", "--type"):
+            options["route_type"] = a
 
         else:
             assert False, "unhandled option"

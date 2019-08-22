@@ -46,6 +46,7 @@ options["prefix"] = None
 options["record"] = True
 options["isp"] = None
 options["seed"] = None
+options["route_type"] = None
 
 
 def option():
@@ -75,6 +76,7 @@ class HappyNodeRoute(HappyNode, HappyNetwork):
                     address.
         -s --isp    Optional. The name of the routing table.
         -e --seed   Optional. Route priority in the routing table. Range: 0-255
+        -y --type   Optional. Ip type of the node's route IP address, one of: v4, v6
 
     Examples:
     $ happy-node-route BorderRouter default 2001:0db8:0111:0001
@@ -115,6 +117,7 @@ class HappyNodeRoute(HappyNode, HappyNetwork):
         self.route_priority = opts["seed"]
         self.via_device = None
         self.via_address = None
+        self.route_type = opts["route_type"]
 
     def __pre_check(self):
         # Check if the name of the new node is given
@@ -488,20 +491,33 @@ class HappyNodeRoute(HappyNode, HappyNetwork):
             self.removeNodeRoute(self.node_id, self.to)
 
     def run(self):
-        self.__pre_check()
-        if self.route_table is not None:
-            with self.getStateLockManager(lock_id="rt"):
-                if self.add:
-                    self.__add_route()
-                else:
-                    self.__delete_route()
+        # query node's route ip in v4 or v6 format.
+        if not self.add and not self.delete:
+            node_route_prefix = self.getNodeRoutePrefix(self.route_type, self.node_id)
+            node_route_via_id = self.getNodeRouteVia(self.route_type, self.node_id)
+            node_route_addrs = self.getNodeAddressesOnPrefix(node_route_prefix, node_route_via_id)
+
+            emsg = "virtual node: {}, route_type: {}, route ip: {}".format(
+                self.node_id, self.route_type, node_route_addrs)
+            print emsg
         else:
-            if self.add:
-                self.__add_route()
-            else:
-                self.__delete_route()
-        self.__post_check()
-        with self.getStateLockManager():
-            self.__update_state()
-            self.writeState()
+            self.__pre_check()
+            # only configure route for nonTAP device
+            # for TAP device, route will be configured in lwip stack in weave.
+            if not self.IsTapDevice(self.node_id):
+                if self.route_table is not None:
+                    with self.getStateLockManager(lock_id="rt"):
+                        if self.add:
+                            self.__add_route()
+                        else:
+                            self.__delete_route()
+                else:
+                    if self.add:
+                        self.__add_route()
+                    else:
+                        self.__delete_route()
+                self.__post_check()
+            with self.getStateLockManager():
+                self.__update_state()
+                self.writeState()
         return ReturnMsg(0)
