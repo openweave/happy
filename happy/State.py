@@ -181,6 +181,24 @@ class State(Driver):
             return []
         return node_interface["ip"].keys()
 
+    def getNodeAddrMatchingPrefix(self, node_id, interface, prefix):
+        """Each interface may have multiple addresses, this function will get addresses based on interface and prefix.
+
+        Args:
+           node_id (str): A string containing the node_id, example: "cloud", "BorderRouter"
+           interface (str): A string containing interface id, example: "wpan0", "wlan0"
+           prefix (str): A string containing an IP prefix, example: "10.0.1"
+
+        Returns:
+           addresses_matchPrefix: A string list containing IP addresses
+        """
+        addresses = self.getNodeInterfaceAddresses(interface, node_id)
+        addresses_matchPrefix = []
+        for address in addresses:
+            if IP.prefixMatchAddress(prefix, address):
+                addresses_matchPrefix.append(address)
+        return addresses_matchPrefix
+
     def getNodeInterfaceAddressInfo(self, interface_id, addr, node_id=None, state=None):
         node_interface = self.getNodeInterface(interface_id, node_id, state)
         if node_interface == {}:
