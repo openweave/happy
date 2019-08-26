@@ -490,15 +490,30 @@ class HappyNodeRoute(HappyNode, HappyNetwork):
         else:
             self.removeNodeRoute(self.node_id, self.to)
 
+    def getNodeRoute(self, node_id, route_type):
+        """This function will get node route base on node_id and route_type.
+
+        Args:
+           node_id (str): A string containing the node_id, example: "cloud", "BorderRouter"
+           route_type (str): A string containing ip type, example: "v4", "v6"
+
+        Returns:
+           node route ip
+        """
+        node_route_prefix = self.getNodeRoutePrefix(route_type, node_id)
+        node_route_via_id = self.getNodeRouteVia(route_type, node_id)
+        node_route_addrs = self.getNodeAddressesOnPrefix(node_route_prefix, node_route_via_id)
+        if len(node_route_addrs) != 1:
+            self.logger.error("HappyNodeRoute: there should be only one route for {}, given {}".format(node_id, len(node_route_addrs)))
+        return node_route_addrs[0]
+
+
     def run(self):
         # query node's route ip in v4 or v6 format.
         if not self.add and not self.delete:
-            node_route_prefix = self.getNodeRoutePrefix(self.route_type, self.node_id)
-            node_route_via_id = self.getNodeRouteVia(self.route_type, self.node_id)
-            node_route_addrs = self.getNodeAddressesOnPrefix(node_route_prefix, node_route_via_id)
-
+            route_ip = self.getNodeRoute(self.node_id, self.route_type)
             emsg = "virtual node: {}, route_type: {}, route ip: {}".format(
-                self.node_id, self.route_type, node_route_addrs)
+                self.node_id, self.route_type, route_ip)
             print emsg
         else:
             self.__pre_check()
