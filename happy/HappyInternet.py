@@ -26,6 +26,7 @@
 
 import os
 import sys
+import json
 import time
 
 from happy.ReturnMsg import ReturnMsg
@@ -91,6 +92,8 @@ class HappyInternet(HappyNode, HappyNodeRoute):
         self.bridge = self.isp_id + 'Bridge'
         self.isp_pool = None
         self.init_happy_isp(isp_id=(self.isp_id + '_'))
+
+        self.iptable_rules = list()
 
     def __pre_check(self):
         if isinstance(self.seed, int) and not (0 < self.seed < 253):
@@ -228,6 +231,7 @@ class HappyInternet(HappyNode, HappyNodeRoute):
         cmd = "ip link set " + self.internet_host_end + " netns %s" % self.bridge
         cmd = self.runAsRoot(cmd)
         ret = self.CallAtHost(cmd)
+
         cmd = "ip netns exec %s brctl addif %s " % (self.bridge, self.bridge) + self.internet_host_end
         cmd = self.runAsRoot(cmd)
         ret = self.CallAtHost(cmd)
@@ -251,17 +255,28 @@ class HappyInternet(HappyNode, HappyNodeRoute):
         # configure nmcli
         tries = 3
         state = self.getHostNMInterfaceStatus(self.internet_node_end)
-        while state != "connecting":
+
+        if state is None:
+            return
+        elif state == "unmanaged":
+            cmd = "nmcli dev set {} managed yes".format(self.internet_node_end)
+            cmd = self.runAsRoot(cmd)
+            ret = self.CallAtHost(cmd)
+            state = self.getHostNMInterfaceStatus(self.internet_node_end)
+
+        while tries > 0:
+            if state == "connecting":
+                break
             time.sleep(1)
             state = self.getHostNMInterfaceStatus(self.internet_node_end)
             tries -= 1
-            if tries <= 0:
-                emsg = "Failed to setup host interface %s with nmcli. Internet may not working." % \
-                    (self.internet_node_end)
-                self.logger.warning("[localhost] HappyInternet: %s" % (emsg))
-                return
+        else:
+            emsg = "Failed to setup host interface {} with nmcli. Internet may not working.".format(
+                self.internet_node_end)
+            self.logger.warning("[localhost] HappyInternet: {}".format(emsg))
+            return
 
-        cmd = "nmcli dev disconnect iface " + self.internet_node_end
+        cmd = "nmcli dev disconnect " + self.internet_node_end
         cmd = self.runAsRoot(cmd)
         ret = self.CallAtHost(cmd)
 
@@ -371,10 +386,7 @@ class HappyInternet(HappyNode, HappyNodeRoute):
             self.exit()
 
         # configure nat on host
-        if self.add:
-            status = 1
-        else:
-            status = 0
+        status = 1 if self.add else 0
 
         cmd = "sysctl -n -w net.ipv6.conf.all.forwarding=%d" % (status)
         cmd = self.runAsRoot(cmd)
@@ -388,35 +400,87 @@ class HappyInternet(HappyNode, HappyNodeRoute):
             return
 
         # Post routing on host
+        iptable_cmd_list = [
+            "POSTROUTING -o {} -j MASQUERADE".format(self.iface),
+            "FORWARD -i {} -o {} -m state --state RELATED,ESTABLISHED -j ACCEPT".format(self.iface,
+                                                                                        self.internet_node_end),
+            "FORWARD -i {} -o {} -j ACCEPT".format(self.internet_node_end, self.iface)
+        ]
+        for rule in iptable_cmd_list:
+            table = "-t filter"
+            if any(keyword in rule for keyword in ('POSTROUTING', 'PREROUTING')):
+                table = "-t nat"
+            # Checking if rule exists
+            cmd = "iptables {} -C {}".format(table, rule)
+            cmd = self.runAsRoot(cmd)
+            ret = self.CallAtHost(cmd)
+            if not ret:
+                self.logger.info("iptables rule exists..do nothing..")
+                self.iptable_rules.append(rule)
+                continue
+            # Add iptable rule
+            cmd = "iptables {} -A {}".format(table, rule)
+            cmd = self.runAsRoot(cmd)
+            ret = self.CallAtHost(cmd)
+            if ret:
+                _, err = self.CallAtHostForOutput(cmd)
+                raise Exception("Unable to add iptable rule: \nErr: {}".format(err))
 
-        cmd = "iptables -t nat -A POSTROUTING -o " + self.iface + " -j MASQUERADE"
-        cmd = self.runAsRoot(cmd)
-        ret = self.CallAtHost(cmd)
-
-        cmd = "iptables -A FORWARD -i " + self.iface + " -o " + self.internet_node_end + \
-              " -m state --state RELATED,ESTABLISHED -j ACCEPT"
-        cmd = self.runAsRoot(cmd)
-        ret = self.CallAtHost(cmd)
-
-        cmd = "iptables -A FORWARD -i " + self.internet_node_end + " -o " + self.iface + " -j ACCEPT"
-        cmd = self.runAsRoot(cmd)
-        ret = self.CallAtHost(cmd)
+            self.iptable_rules.append(rule)
 
     def __nat_isp_node(self):
         # configure nat on node
         # Post routing on node
+        iptable_cmd_list = [
+            "POSTROUTING -o {} -j MASQUERADE".format(self.isp_node_end),
+            "FORWARD -o {} -m state --state RELATED,ESTABLISHED -j ACCEPT".format(self.isp_node_end),
+            "FORWARD -i {} -j ACCEPT".format(self.isp_node_end)
+        ]
+        for rule in iptable_cmd_list:
+            table = "-t filter"
+            if any(keyword in rule for keyword in ('POSTROUTING', 'PREROUTING')):
+                table = "-t nat"
+            cmd = "iptables {} -A {}".format(table, rule)
+            cmd = self.runAsRoot(cmd)
+            ret = self.CallAtNode(self.node_id, cmd)
 
-        cmd = "iptables -t nat -A POSTROUTING -o " + self.isp_node_end + " -j MASQUERADE"
-        cmd = self.runAsRoot(cmd)
-        ret = self.CallAtNode(self.node_id, cmd)
+    def __save_iptable_commands(self):
+        """
+        API to save successfully executed iptable rules for later restore back to
+        origin iptable settings.
+        """
+        if not len(self.iptable_rules):
+            self.logger.warn("iptable: Nothing to be save, "
+                             "please check and see if that is correct.")
+            return
+        isp_state_dict = json.load(open(self.isp_state_file, 'r'))
+        isp_state_dict.update({"isp_state_fw": self.iptable_rules})
+        with open(self.isp_state_file, 'w') as fp:
+            json.dump(isp_state_dict, fp)
 
-        cmd = "iptables -A FORWARD -o " + self.isp_node_end + " -m state --state RELATED,ESTABLISHED -j ACCEPT"
-        cmd = self.runAsRoot(cmd)
-        ret = self.CallAtNode(self.node_id, cmd)
+    def __flush_iptable_commands(self):
+        """API to remove iptable rules that is create by happy"""
+        if not os.path.isfile(self.isp_state_file):
+            self.logger.warn("Unable to run iptable rules flush, isp state file is missing."
+                             "Do nothing..")
+            return
 
-        cmd = "iptables -A FORWARD -i " + self.isp_node_end + " -j ACCEPT"
-        cmd = self.runAsRoot(cmd)
-        ret = self.CallAtNode(self.node_id, cmd)
+        with open(self.isp_state_file, 'r') as fp:
+            fw_dict = json.load(fp).get("isp_state_fw", None)
+            if not fw_dict:
+                self.logger.warn("No added firewall rules need to be flush. "
+                                 "Do nothing...")
+                return
+            for rule in fw_dict:
+                table = "-t filter"
+                if any(keyword in rule for keyword in ('POSTROUTING', 'PREROUTING')):
+                    table = "-t nat"
+                cmd = "iptables {} -C {}".format(table, rule)
+                cmd = self.runAsRoot(cmd)
+                while not self.CallAtHost(cmd):
+                    cmd1 = "iptables {} -D {}".format(table, rule)
+                    cmd1 = self.runAsRoot(cmd1)
+                    ret = self.CallAtHost(cmd1)
 
     def __delete_isp(self):
         # delete isp network namespace
@@ -451,7 +515,7 @@ class HappyInternet(HappyNode, HappyNodeRoute):
             with self.getStateLockManager(lock_id="rt"):
                 self.__route()
             self.__nat_isp_node()
-
+            self.__save_iptable_commands()
             with self.getStateLockManager():
                 self.__internet_state()
                 self.writeState()
@@ -474,5 +538,6 @@ class HappyInternet(HappyNode, HappyNodeRoute):
                     self.removeGlobalIsp()
 
                 self.writeIspState()
+            self.__flush_iptable_commands()
 
         return ReturnMsg(0)
