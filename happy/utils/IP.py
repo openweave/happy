@@ -292,9 +292,9 @@ class IP:
 
         if int_addr >= 65536:
             if (1 << 57) > int_addr:
-                int_addr = (1 << 57) | int_addr
+                int_addr = (1 << 57) ^ int_addr
             else:
-                int_addr = int_addr | (1 << 57)
+                int_addr = int_addr ^ (1 << 57)
 
         if type(addr) == str:
             iid_addr = IP.int_to_ipv6_addr_string(int_addr)
@@ -308,7 +308,7 @@ class IP:
         if type(addr) == str:
             eui_addr = IP.ipv6_addr_string_to_int(addr)
 
-        eui_addr = ~pow(2, 57) & eui_addr
+        eui_addr = pow(2, 57) ^ eui_addr
 
         if type(addr) == str:
             eui_addr = IP.int_to_eui64_string(eui_addr)
