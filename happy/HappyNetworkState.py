@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -22,6 +22,8 @@
 #       Implements HappyNetworkState class that shows virtual networks.
 #
 
+from __future__ import absolute_import
+from __future__ import print_function
 import json
 import os
 import sys
@@ -139,7 +141,7 @@ class HappyNetworkState(HappyNetwork):
 
             if not self.up and not self.down:
                 state = self._networkState()
-                print "Network " + self.network_id + ": " + state
+                print("Network " + self.network_id + ": " + state)
 
             else:
                 self.__update_network_state()

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -24,6 +24,7 @@
 #       A virtual node is a logical representation of a network namespace.
 #
 
+from __future__ import absolute_import
 import os
 import sys
 
@@ -31,6 +32,7 @@ from happy.ReturnMsg import ReturnMsg
 from happy.Utils import *
 from happy.HappyLink import HappyLink
 import happy.HappyLinkDelete
+from six.moves import range
 
 options = {}
 options["quiet"] = False
@@ -99,7 +101,7 @@ class HappyLinkAdd(HappyLink):
 
         self.type = self.type.lower()
 
-        if self.type not in self.network_type.keys():
+        if self.type not in list(self.network_type.keys()):
             emsg = "Invalid link type " + self.type
             self.logger.error("[%s] HappyLinkAdd: %s" % ("Link", emsg))
             self.exit()
@@ -161,7 +163,7 @@ class HappyLinkAdd(HappyLink):
         #
 
         cmd = "ip tuntap add " + self.link_node_end + " mode tap"
-        if "USER" in os.environ.keys():
+        if "USER" in list(os.environ.keys()):
             cmd += " user " + os.environ["USER"]
         cmd = self.runAsRoot(cmd)
         ret = self.CallAtHost(cmd)

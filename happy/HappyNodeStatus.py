@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -22,6 +22,8 @@
 #       Implements HappyNodeStatus class that shows virtual nodes.
 #
 
+from __future__ import absolute_import
+from __future__ import print_function
 import json
 import os
 import sys
@@ -29,6 +31,7 @@ import sys
 from happy.ReturnMsg import ReturnMsg
 from happy.Utils import *
 from happy.HappyNode import HappyNode
+from six.moves import range
 
 options = {}
 options["quiet"] = False
@@ -77,38 +80,38 @@ class HappyNodeStatus(HappyNode):
         pass
 
     def __print_all_nodes(self):
-        print "{0: >15} {1: >12} {2: >7} {3: >44}".format("NODES      Name", "Interface", "Type", "IPs")
+        print("{0: >15} {1: >12} {2: >7} {3: >44}".format("NODES      Name", "Interface", "Type", "IPs"))
 
         for node_id in self.getNodeIds():
-            print "{0: >15}".format(node_id),
+            print("{0: >15}".format(node_id), end=' ')
 
             interfaces = self.getNodeInterfaceIds(node_id)
 
             if len(interfaces) == 0:
-                print
+                print()
                 continue
 
             for i in range(len(interfaces)):
                 if i > 0:
-                    print " " * 15,
+                    print(" " * 15, end=' ')
 
-                print "{0: >12} {1: >7}".format(interfaces[i],
-                                                self.getNodeInterfaceType(interfaces[i], node_id)),
+                print("{0: >12} {1: >7}".format(interfaces[i],
+                                                self.getNodeInterfaceType(interfaces[i], node_id)), end=' ')
 
                 addresses = self.getNodeInterfaceAddresses(interfaces[i], node_id)
 
                 if len(addresses) == 0:
-                    print
+                    print()
                     continue
 
                 for a in range(len(addresses)):
                     if a > 0:
-                        print " " * 36,
+                        print(" " * 36, end=' ')
 
-                    print " {0: >40}/{1: <3}".format(addresses[a],
+                    print(" {0: >40}/{1: <3}".format(addresses[a],
                                                      self.getNodeInterfaceAddressMask(interfaces[i],
-                                                     addresses[a], node_id))
-                print
+                                                     addresses[a], node_id)))
+                print()
 
     def run(self):
         self.__pre_check()
@@ -120,11 +123,11 @@ class HappyNodeStatus(HappyNode):
         data_state = json.dumps(self.getNode(self.node_id), sort_keys=True, indent=4)
         emsg = "virtual node state: " + self.node_id
 
-        print emsg
+        print(emsg)
 
         self.logger.info("[%s] HappyNodeStatus: %s" % (self.node_id, emsg))
 
-        print data_state
+        print(data_state)
 
         for line in data_state.split("\n"):
             if line is None or len(line) == 0:

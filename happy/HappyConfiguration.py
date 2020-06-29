@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -22,6 +22,8 @@
 #       Implements HappyConfiguration class that modifies a user's configuration setup.
 #
 
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import sys
 
@@ -76,8 +78,8 @@ class HappyConfiguration(State):
         self.value = opts["value"]
         self.config_type = opts["config-type"]
         if not (self.config_type in ('main', 'log', 'user')):
-            print "Invalid value for the configuration type"
-            print happy.HappyConfiguration.HappyConfiguration.__doc__
+            print("Invalid value for the configuration type")
+            print(happy.HappyConfiguration.HappyConfiguration.__doc__)
             sys.exit(1)
 
     def __pre_check(self):
@@ -87,7 +89,7 @@ class HappyConfiguration(State):
         pass
 
     def __print_configuration(self, config_type):
-        print config_type.capitalize() + " Happy Configuration"
+        print(config_type.capitalize() + " Happy Configuration")
         if config_type == 'user':
             d = self.configuration
         elif config_type == 'main':
@@ -96,8 +98,8 @@ class HappyConfiguration(State):
             d = self.log_conf
 
         for key in d.keys():
-            print "\t" + key + "\t " + str(d[key])
-        print
+            print("\t" + key + "\t " + str(d[key]))
+        print()
 
     def run(self):
         self.__pre_check()
@@ -114,18 +116,18 @@ class HappyConfiguration(State):
             d = self.log_conf
 
         if self.delete:
-            if self.delete in d.keys():
+            if self.delete in list(d.keys()):
                 del d[self.delete]
 
         if self.key is not None and self.value is not None:
             d[self.key] = self.value
 
         if self.key is not None and self.value is None:
-            print "\t" + self.key + "\t",
-            if self.key in d.keys():
-                print d[self.key]
+            print("\t" + self.key + "\t", end=' ')
+            if self.key in list(d.keys()):
+                print(d[self.key])
             else:
-                print "not defined"
+                print("not defined")
 
         self.writeConfiguration(d, self.config_type)
 

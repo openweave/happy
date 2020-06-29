@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -22,6 +22,8 @@
 #       Implements HappyState class that reports virtual network topology setup information.
 #
 
+from __future__ import absolute_import
+from __future__ import print_function
 import itertools
 import json
 import os
@@ -140,33 +142,33 @@ class HappyState(State):
 
     def __print_own_state(self):
 
-        print
+        print()
 
-        print "State Name: ",
-        print self.getStateId()
+        print("State Name: ", end=' ')
+        print(self.getStateId())
 
-        print
+        print()
 
         options = happy.HappyNetworkStatus.option()
         options["quiet"] = self.quiet
         nets = happy.HappyNetworkStatus.HappyNetworkStatus(options)
         nets.run()
 
-        print
+        print()
 
         options = happy.HappyNodeStatus.option()
         options["quiet"] = self.quiet
         nodes = happy.HappyNodeStatus.HappyNodeStatus(options)
         nodes.run()
 
-        print
+        print()
 
     def __print_json_state(self):
         if self.json:
             json_data = json.dumps(self.state, sort_keys=True, indent=4)
-            print
-            print json_data
-            print
+            print()
+            print(json_data)
+            print()
 
     def __save_state(self):
         if self.save is None:
@@ -178,7 +180,7 @@ class HappyState(State):
         try:
             json_data = json.dumps(self.state, sort_keys=True, indent=4)
         except Exception:
-            print "Failed to save state file: %s" % (self.save)
+            print("Failed to save state file: %s" % (self.save))
             self.logger.error("calls self.exit()")
             self.exit()
 
@@ -193,15 +195,15 @@ class HappyState(State):
             return
         node_info = {}
 
-        print
+        print()
 
-        print "State Name: {}".format(self.getStateId())
+        print("State Name: {}".format(self.getStateId()))
 
-        print "Node: {}".format(self.node)
+        print("Node: {}".format(self.node))
 
         node_info = self.getNodeInfo(self.node)
         node_json_data = json.dumps(node_info, sort_keys=True, indent=2)
-        print node_json_data
+        print(node_json_data)
 
     def __print_extension_value(self):
         """print happy extension value
@@ -210,12 +212,12 @@ class HappyState(State):
         if self.extension is None:
             return
 
-        print "{} extension state:".format(self.extension)
+        print("{} extension state:".format(self.extension))
 
         ext_value = self.getExtensionValue(self.extension)
 
         ext_json_data = json.dumps(ext_value, sort_keys=True, indent=2)
-        print ext_json_data
+        print(ext_json_data)
 
     def __graph_state(self):
         if self.graph is None:
@@ -224,17 +226,17 @@ class HappyState(State):
         if not has_networkx:
             emsg = "Cannot generate graph. Localhost is missing networkx libraries."
             self.logger.warning("[localhost] HappyState: %s" % (emsg))
-            print hyellow(emsg)
+            print(hyellow(emsg))
             extra_msg = "Try,   apt-get install python-networkx"
-            print hyellow(extra_msg)
+            print(hyellow(extra_msg))
             return
 
         if not has_matplotlib:
             emsg = "Cannot generate graph. Localhost is missing matplotlib libraries."
             self.logger.warning("[localhost] HappyState: %s" % (emsg))
-            print hyellow(emsg)
+            print(hyellow(emsg))
             extra_msg = "Try,   apt-get install python-matplotlib"
-            print hyellow(extra_msg)
+            print(hyellow(extra_msg))
             return
 
         G = nx.Graph()
@@ -337,19 +339,19 @@ class HappyState(State):
         if self.show_id:
             states = self.__get_state_ids()
             this_state = self.getStateId()
-            print this_state + " <"
+            print(this_state + " <")
 
             for s in states:
                 if s == this_state:
                     continue
-                print s
+                print(s)
 
     def __get_log_path(self):
         file_path = None
 
-        if "handlers" in self.log_conf.keys():
-            if "file" in self.log_conf["handlers"].keys():
-                if "filename" in self.log_conf["handlers"]["file"].keys():
+        if "handlers" in list(self.log_conf.keys()):
+            if "file" in list(self.log_conf["handlers"].keys()):
+                if "filename" in list(self.log_conf["handlers"]["file"].keys()):
                     file_path = self.log_conf["handlers"]["file"]["filename"]
 
         return file_path
@@ -384,12 +386,12 @@ class HappyState(State):
             if file_path is None:
                 emsg = "Happy aggregated logs file is unknown."
                 self.logger.warning("[localhost] HappyState: %s" % (emsg))
-                print hyellow(emsg)
+                print(hyellow(emsg))
                 return
 
             cmd = "tail -n 100 -f  " + file_path
 
-        print hgreen("Happy Runtime Logs. Press <Ctrl-C> to exit.")
+        print(hgreen("Happy Runtime Logs. Press <Ctrl-C> to exit."))
         os.system(cmd)
 
     def run(self):

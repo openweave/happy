@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -24,6 +24,8 @@
 #       A virtual network is logical representation of an ethernet bridge.
 #
 
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import sys
 
@@ -62,7 +64,7 @@ class HappyNetworkList(HappyNetwork):
         self.networks = self.getNetworkIds()
 
         for n in self.networks:
-            print n
+            print(n)
             if not self.quiet:
                 self.logger.info(n)
 

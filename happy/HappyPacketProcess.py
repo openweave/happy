@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -26,6 +26,8 @@
 #
 #
 
+from __future__ import absolute_import
+from __future__ import print_function
 from datetime import datetime
 import getopt
 import logging
@@ -37,6 +39,7 @@ from struct import *
 import signal
 import sys
 import time
+from six.moves import range
 
 options = {}
 options['interface'] = None
@@ -410,7 +413,7 @@ def Sniffer(packetList, e):
         snifferFilter = Filter(packetDic, options)
         if snifferFilter.run() is True:
             continue
-        print packetDic
+        print(packetDic)
         packetList.append(packetDic)
         e.set()
 
@@ -493,12 +496,12 @@ if __name__ == "__main__":
 
     for o, a in opts:
         if o in ("-h", "--help"):
-            print 'Implements HappyPacketProcess class that sniffer packet and inject the specifc packet with tcp-reject,' \
+            print('Implements HappyPacketProcess class that sniffer packet and inject the specifc packet with tcp-reject,' \
                   'the fitler rule could be with dst ip or ip list(source ip and dest ip)' \
                   'python HappyPacketProcess.py  --interface "wlan0" --action "RESET" --ips "107.22.61.55,10.0.1.2" ' \
                   '--start "2" --duration 6 ' \
                   'python HappyPacketProcess.py  --interface "wlan0" --action "RESET" --dstPort "11095" ' \
-                  '--start "2" --duration "20"'
+                  '--start "2" --duration "20"')
             sys.exit(0)
 
         elif o in ("-q", "--quiet"):
@@ -564,12 +567,12 @@ if __name__ == "__main__":
     )
     attack.start()
 
-    print str(datetime.now())
+    print(str(datetime.now()))
     try:
         with TimeoutControl(options["duration"]):
             manager.join()
     except Exception:
         sniffer.terminate()
         attack.terminate()
-        print str(datetime.now())
+        print(str(datetime.now()))
         pass

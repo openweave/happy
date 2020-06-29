@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2016-2017 Nest Labs, Inc.
@@ -24,6 +24,7 @@
 #
 #
 
+from __future__ import absolute_import
 import os
 import sys
 import time
@@ -32,6 +33,7 @@ from happy.ReturnMsg import ReturnMsg
 from happy.Utils import *
 from happy.HappyNode import HappyNode
 from happy.HappyNodeRoute import HappyNodeRoute
+from six.moves import range
 
 options = {}
 options["quiet"] = False
@@ -47,7 +49,7 @@ def option():
     return options.copy()
 
 
-class HappyInternet(HappyNode, HappyNodeRoute):
+class HappyInternet(HappyNodeRoute):
     """
     Connects a virtual node to the internet through a virtual ISP.
 
@@ -166,7 +168,7 @@ class HappyInternet(HappyNode, HappyNodeRoute):
 
     def __initialize_isp_pool(self):
         # initialize isp pool
-        isp_seed = range(1, 256)
+        isp_seed = list(range(1, 256))
         self.isp_pool = [{"isp_addr": self.prefix + str(i),
                           "isp_index": str(i),
                           "occupy": False,
@@ -357,7 +359,7 @@ class HappyInternet(HappyNode, HappyNodeRoute):
     def __nat_host(self):
         # If interface is not provided, try guessing one
         if not self.iface:
-            if "happy_host_netif" in os.environ.keys():
+            if "happy_host_netif" in list(os.environ.keys()):
                 self.iface = os.environ['happy_host_netif']
             else:
                 self.iface = self.getDefaultInterfaceName()
@@ -431,7 +433,7 @@ class HappyInternet(HappyNode, HappyNodeRoute):
         if self.add:
             with self.getStateLockManager(lock_id="isp"):
                 self.readIspState()
-                # print self.getStateId()
+                # print(self.getStateId())
                 self.isp_pool = self.getIsp()
                 if not bool(self.isp_pool):
                     self.__initialize_isp_pool()

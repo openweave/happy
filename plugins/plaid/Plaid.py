@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2016-2017 Nest Labs, Inc.
@@ -23,6 +23,8 @@
 #       framework in Happy tests
 #
 
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import sys
 import glob
@@ -61,7 +63,7 @@ plaid_network_id = "plaid_network"
 
 def deletePlaidNetwork():
 
-    print "Deleting the plaid network"
+    print("Deleting the plaid network")
 
     node_delete_options = happy.HappyNodeDelete.option()
     node_delete_options["node_id"] = plaid_server_node_id
@@ -76,10 +78,10 @@ def deletePlaidNetwork():
     network_delete_cmd.run()
 
     state = happy.State.State()
-    print "state.isStateEmpty(): " + str(state.isStateEmpty())
+    print("state.isStateEmpty(): " + str(state.isStateEmpty()))
 
     if state.isStateEmpty():
-        print "The happy state is now empty, deleting the file"
+        print("The happy state is now empty, deleting the file")
         state_delete_options = happy.HappyStateDelete.option()
         state_delete_options["quiet"] = True
         state_delete_cmd = happy.HappyStateDelete.HappyStateDelete(state_delete_options)
@@ -117,7 +119,7 @@ class Plaid(State):
 
     def __get_plaid_happy_conf_path(self):
         plaid_happy_conf_path = None
-        if "plaid_path" in self.configuration.keys():
+        if "plaid_path" in list(self.configuration.keys()):
             plaid_happy_conf_path = self.configuration["plaid_path"]
             emsg = "Found plaid path: %s." % (plaid_happy_conf_path)
             self.logger.debug("[localhost] Plaid: %s" % (emsg))
@@ -180,7 +182,7 @@ class Plaid(State):
 
     def isPlaidConfigured(self):
         # Plaid is not yet supported on lwip
-        running_on_lwip = ("WEAVE_SYSTEM_CONFIG_USE_LWIP" in os.environ.keys() and
+        running_on_lwip = ("WEAVE_SYSTEM_CONFIG_USE_LWIP" in list(os.environ.keys()) and
                            os.environ["WEAVE_SYSTEM_CONFIG_USE_LWIP"] == "1")
         return self.plaid_path is not None and not running_on_lwip
 

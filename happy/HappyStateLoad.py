@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2016-2017 Nest Labs, Inc.
@@ -24,6 +24,7 @@
 #       A virtual fabric topology consists of virtual nodes and networks.
 #
 
+from __future__ import absolute_import
 import json
 import os
 import sys
@@ -153,7 +154,7 @@ class HappyStateLoad(State):
             options["network_id"] = link["network"]
             options["tap"] = link["tap"]
 
-            if "fix_hw_addr" in link.keys():
+            if "fix_hw_addr" in list(link.keys()):
                 options["fix_hw_addr"] = link["fix_hw_addr"]
             else:
                 options["fix_hw_addr"] = None

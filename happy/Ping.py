@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -22,6 +22,8 @@
 #       Implements Ping class that call ping to virtual nodes.
 #
 
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import sys
 
@@ -189,7 +191,7 @@ class Ping(HappyNode):
         if self.addresses == {}:
             emsg = "No address to ping at " + str(self.destination) + "."
             self.logger.warning("[%s] Ping: %s" % (self.source, emsg))
-            print hyellow(emsg)
+            print(hyellow(emsg))
             return ReturnMsg(100, self.addresses)
 
         for addr in self.addresses.keys():

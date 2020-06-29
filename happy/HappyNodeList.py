@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -22,6 +22,8 @@
 #       Implements HappyNodeList class that shows virtual nodes.
 #
 
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import sys
 
@@ -61,7 +63,6 @@ class HappyNodeList(HappyNode):
         self.nodes.sort()
 
         for n in self.nodes:
-            print n
             if not self.quiet:
                 self.logger.info(n)
 

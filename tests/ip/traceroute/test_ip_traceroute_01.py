@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -22,6 +22,7 @@
 #       Calls traceroute between nodes.
 #
 
+from __future__ import absolute_import
 import os
 import unittest
 

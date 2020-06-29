@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -24,6 +24,8 @@
 #       This is a wrapper around Linux ip-address command.
 #
 
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import sys
 
@@ -193,8 +195,8 @@ class HappyNodeAddress(HappyNode):
 
             emsg = "virtual node: " + self.node_id + " addresses list for interface id: " + self.interface
 
-            print emsg
-            print data_state
+            print(emsg)
+            print(data_state)
 
         else:
             with self.getStateLockManager():

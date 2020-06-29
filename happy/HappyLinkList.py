@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -22,6 +22,8 @@
 #       Implements HappyLinkList class that displays a list of virtual links.
 #
 
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import sys
 
@@ -71,20 +73,20 @@ class HappyLinkList(HappyLink):
         link_ids.sort()
 
         for link_id in link_ids:
-            print link_id
+            print(link_id)
 
             if self.getLinkNetwork(link_id) is None:
-                print "\tNetwork: not assigned"
+                print("\tNetwork: not assigned")
             else:
-                print "\tNetwork: " + self.getLinkNetwork(link_id)
+                print("\tNetwork: " + self.getLinkNetwork(link_id))
 
             if self.getLinkNode(link_id) is None:
-                print "\tNode: not assigned"
+                print("\tNode: not assigned")
             else:
-                print "\tNode: " + self.getLinkNode(link_id)
+                print("\tNode: " + self.getLinkNode(link_id))
 
-            print "\tType: " + self.getLinkType(link_id)
-            print
+            print("\tType: " + self.getLinkType(link_id))
+            print()
 
     def __post_check(self):
         pass

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -24,6 +24,8 @@
 #       virtual network-specific actions inherit from this class.
 #
 
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import sys
 
@@ -144,7 +146,7 @@ class HappyNetwork(HappyHost):
 
         prefix_list = prefix.split(".")
         if len(prefix_list) < 3:
-            print hred("Invalid prefix %s, guessing id" % (prefix))
+            print(hred("Invalid prefix %s, guessing id" % (prefix)))
             return 100
 
         for ip in all_ips:

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -22,6 +22,8 @@
 #       Calls traceroute between nodes.
 #
 
+from __future__ import absolute_import
+from __future__ import print_function
 import itertools
 import os
 import unittest
@@ -82,12 +84,12 @@ class test_ip_traceroute_02(unittest.TestCase):
         for pair in pairs_of_nodes:
             value, data = self.__send_traceroute_between(pair[0], pair[1])
 
-            print "traceroute from " + pair[0] + " to " + pair[1] + " ",
+            print("traceroute from " + pair[0] + " to " + pair[1] + " ", end=' ')
 
             if value < 1:
-                print hred("Failed")
+                print(hred("Failed"))
             else:
-                print hgreen("Passed")
+                print(hgreen("Passed"))
 
 if __name__ == "__main__":
     unittest.main()

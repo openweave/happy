@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -24,6 +24,8 @@
 #       virtual node specific actions inherit from this class.
 #
 
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import sys
 
@@ -31,6 +33,7 @@ from happy.Utils import *
 from happy.utils.IP import IP
 from happy.HappyHost import HappyHost
 import happy.HappyLinkDelete
+from six.moves import range
 
 
 class HappyNode(HappyHost):
@@ -150,7 +153,6 @@ class HappyNode(HappyHost):
                 if addr != address:
                     continue
 
-                print line
                 return line
 
         return None
@@ -178,7 +180,7 @@ class HappyNode(HappyHost):
     def getInterfaceEUI64(self, interface_id, node_id=None):
         eui = None
         node_interface = self.getNodeInterface(interface_id, node_id)
-        if "customized_eui64" in node_interface.keys():
+        if "customized_eui64" in list(node_interface.keys()):
             eui = str(node_interface["customized_eui64"])
         else:
             hwAddr = self.getHwAddress(interface_id, node_id)
@@ -219,7 +221,7 @@ class HappyNode(HappyHost):
         prefix_addr, prefix_mask = IP.splitAddressMask(prefix)
         prefix_mask = int(float(prefix_mask))
 
-        addr = prefix_addr.split(".")[:prefix_mask / 8]
+        addr = prefix_addr.split(".")[:prefix_mask // 8]
         addr.append(str(id % 255))
 
         addr = ".".join(addr)

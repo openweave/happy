@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2017 Nest Labs, Inc.
@@ -22,6 +22,8 @@
 #       Implements HappyLogger class that provides logging routines
 #
 
+from __future__ import absolute_import
+from __future__ import print_function
 import logging
 import logging.config
 import os
@@ -66,7 +68,7 @@ class HappyLogger():
                 json_data = jfile.read()
                 self.log_conf = json.loads(json_data)
         except:
-            print "Failed to load config from %s." % (self.log_conf_file)
+            print("Failed to load config from %s." % (self.log_conf_file))
             sys.exit(1)
 
         confDict = dict(self.main_conf)
@@ -83,28 +85,28 @@ class HappyLogger():
 
         try:
             pass
-        except ValueError, e:
+        except ValueError as e:
             emsg = "Failed to load logging configuration: "
-            print emsg
-            print e
+            print(emsg)
+            print(e)
             sys.exit(1)
 
-        except TypeError, e:
+        except TypeError as e:
             emsg = "Failed to load logging configuration: %d (%s)" % \
                 (e.errno, e.strerror)
-            print emsg
+            print(emsg)
             sys.exit(1)
 
-        except AttributeError, e:
+        except AttributeError as e:
             emsg = "Failed to load logging configuration: %d (%s)" % \
                 (e.errno, e.strerror)
-            print emsg
+            print(emsg)
             sys.exit(1)
 
-        except ImportError, e:
+        except ImportError as e:
             emsg = "Failed to load logging configuration: %d (%s)" % \
                 (e.errno, e.strerror)
-            print emsg
+            print(emsg)
             sys.exit(1)
 
 if __name__ == '__main__':

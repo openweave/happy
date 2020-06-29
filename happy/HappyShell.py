@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -24,6 +24,7 @@
 #       A virtual node is logical representation of a network namespace.
 #
 
+from __future__ import absolute_import
 import os
 import sys
 
@@ -108,7 +109,7 @@ class HappyShell(HappyNode):
 
         env = os.environ
 
-        env["PS1"] = '\u@' + '\[\e[1;32m\]' + self.node_id + '\[\e[m\]' + ':\w\$ '
+        env["PS1"] = r'\u@' + '\[\e[1;32m\]' + self.node_id + '\[\e[m\]' + ':\w\$ '
         env["HAPPY_HOST"] = self.node_id
 
         if self.command:

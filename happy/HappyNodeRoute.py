@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -24,6 +24,8 @@
 #       This is a wrapper around Linux ip-address command.
 #
 
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import re
 import sys
@@ -109,7 +111,7 @@ class HappyNodeRoute(HappyNode, HappyNetwork):
         self.via = opts["via"]
         self.prefix = opts["prefix"]
         self.record = opts["record"]
-        if "weave_service_address" in os.environ.keys():
+        if "weave_service_address" in list(os.environ.keys()):
             tier = os.environ['weave_service_address'].split(".")[3][0:3]
         else:
             tier = "test"
@@ -514,7 +516,7 @@ class HappyNodeRoute(HappyNode, HappyNetwork):
             route_ip = self.getNodeRoute(self.node_id, self.route_type)
             emsg = "virtual node: {}, route_type: {}, route ip: {}".format(
                 self.node_id, self.route_type, route_ip)
-            print emsg
+            print(emsg)
         else:
             self.__pre_check()
             # only configure route for nonTAP device
