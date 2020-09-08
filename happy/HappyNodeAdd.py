@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -24,6 +24,7 @@
 #       A virtual node is logical representation of a network namespace.
 #
 
+from __future__ import absolute_import
 import os
 import sys
 import time

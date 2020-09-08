@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -25,11 +25,13 @@
 #       is a logical representation of a network namespace.
 #
 
+from __future__ import absolute_import
 import os
 import subprocess
 import sys
 import time
 import psutil
+import warnings
 
 from happy.ReturnMsg import ReturnMsg
 from happy.Utils import *
@@ -307,7 +309,7 @@ class HappyProcessStart(HappyNode, HappyProcess):
         cmd_list_prefix = self.getRunAsRootPrefixList() + cmd_list_prefix
 
         try:
-            self.fout = open(self.output_file, "w", 0)
+            self.fout = open(self.output_file, "wb", 0)
         except Exception:
             emsg = "Failed to open file %s." % (self.output_file)
             self.logger.error("[%s] HappyProcessStart: %s." % (self.node_id, emsg))

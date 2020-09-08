@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -23,6 +23,8 @@
 #       necessary to run Happy. Most other classes inherit Driver.
 #
 
+from __future__ import absolute_import
+from __future__ import print_function
 import getopt
 import getpass
 import json
@@ -34,8 +36,9 @@ import os
 import subprocess
 import sys
 import time
-import happy.HappyLogger as HappyLogger
+import warnings
 
+import happy.HappyLogger as HappyLogger
 from happy.utils.IP import IP
 from happy.Utils import *
 
@@ -59,6 +62,7 @@ class StateLock(object):
         self.filelock = lockfile.FileLock(self.filename)
         self.counter = 0
         self.logger = logger
+        warnings.filterwarnings("ignore", category=ResourceWarning)
 
     def lock(self):
         wait_time = 0.1
@@ -172,27 +176,27 @@ class Driver:
 
             self.main_conf = json.loads(json_data)
         except Exception:
-            print "Failed to load config from %s." % (self.main_conf_file)
+            print("Failed to load config from %s." % (self.main_conf_file))
             sys.exit(1)
 
         try:
             self.default_state = self.main_conf["default_state"]
         except Exception:
-            print "Failed to find default state name in the main configuration file %s." \
-                % (self.main_conf_file)
+            print("Failed to find default state name in the main configuration file %s." \
+                % (self.main_conf_file))
             sys.exit(1)
 
         try:
             self.state_environ = self.main_conf["state_environ"]
         except Exception:
-            print "Failed to find state environment variable name in the main configuration file %s." \
-                % (self.main_conf_file)
+            print("Failed to find state environment variable name in the main configuration file %s." \
+                % (self.main_conf_file))
             sys.exit(1)
 
         try:
             self.state_id = self.getStateId()
         except Exception:
-            print "Failed to get state id from %s." % (self.main_conf_file)
+            print("Failed to get state id from %s." % (self.main_conf_file))
             sys.exit(1)
 
         # default_happy_log_dir will be default dir for happy log
@@ -200,21 +204,21 @@ class Driver:
         try:
             self.default_happy_log_dir = self.main_conf["default_happy_log_dir"]
         except Exception:
-            print "Failed to find default_happy_log dir in the main configuration file %s." \
-                % (self.main_conf_file)
+            print("Failed to find default_happy_log dir in the main configuration file %s." \
+                % (self.main_conf_file))
             sys.exit(1)
 
         try:
             self.happy_log_environ = "HAPPY_LOG_DIR"
         except Exception:
-            print "Failed to find happy log environment variable name in the main configuration file %s." \
-                % (self.main_conf_file)
+            print("Failed to find happy log environment variable name in the main configuration file %s." \
+                % (self.main_conf_file))
             sys.exit(1)
 
         try:
             self.happy_log_dir = self.getHappyLogDir()
         except Exception:
-            print "Failed to get happy log dir from %s." % (self.main_conf_file)
+            print("Failed to get happy log dir from %s." % (self.main_conf_file))
             sys.exit(1)
 
         try:
@@ -228,8 +232,8 @@ class Driver:
             self.configuration_file = os.path.expanduser(self.main_conf["configuration_file"])
 
         except Exception:
-            print "Failed to parse main configuration for state file names: %s" \
-                % (self.main_conf_file)
+            print("Failed to parse main configuration for state file names: %s" \
+                % (self.main_conf_file))
             sys.exit(1)
 
         try:
@@ -249,7 +253,7 @@ class Driver:
 
                 self.log_conf = json.loads(json_data)
         except Exception:
-            print "Failed to load config from %s." % (self.log_conf_file)
+            print("Failed to load config from %s." % (self.log_conf_file))
             sys.exit(1)
 
         try:
@@ -266,28 +270,28 @@ class Driver:
 
             h = HappyLogger.HostnameFilter()
 
-        except ValueError, e:
+        except ValueError as e:
             emsg = "Failed to load logging configuration: "
-            print emsg
-            print e
+            print(emsg)
+            print(e)
             sys.exit(1)
 
-        except TypeError, e:
+        except TypeError as e:
             emsg = "Failed to load logging configuration: %d (%s)" % \
                 (e.errno, e.strerror)
-            print emsg
+            print(emsg)
             sys.exit(1)
 
-        except AttributeError, e:
+        except AttributeError as e:
             emsg = "Failed to load logging configuration: %d (%s)" % \
                 (e.errno, e.strerror)
-            print emsg
+            print(emsg)
             sys.exit(1)
 
-        except ImportError, e:
+        except ImportError as e:
             emsg = "Failed to load logging configuration: %d (%s)" % \
                 (e.errno, e.strerror)
-            print emsg
+            print(emsg)
             sys.exit(1)
 
     def __initConfiguration(self):
@@ -325,8 +329,8 @@ class Driver:
             self.process_log_prefix = self.main_conf["process_log_prefix"] % confDict
 
         except Exception as e:
-            print "Failed to find process's log prefix in the main configuration file %s. Exception %s" \
-                % (self.main_conf_file, str(e))
+            print("Failed to find process's log prefix in the main configuration file %s. Exception %s" \
+                % (self.main_conf_file, str(e)))
             sys.exit(1)
 
     def writeConfiguration(self, configuration, config_type='user'):
@@ -346,7 +350,7 @@ class Driver:
             filename = self.getLogConfigPath()
         else:
             emsg = "Invalid configuration type: %s" % (str(config_type))
-            print emsg
+            print(emsg)
             sys.exit(1)
 
         with open(filename, 'w') as jfile:
@@ -477,21 +481,20 @@ class Driver:
 
         if output == 'shell':
             return result, None, None
+        else:
+            out_result = process.stdout.read().decode("utf-8")
+            err_result = process.stderr.read().decode("utf-8")
+            if out_result is not None:
+                for line in out_result.split("\n"):
+                    if len(line) > 0:
+                        self.logger.debug("Happy [%s]:      %s" % (self.state_id, line))
 
-        out_result = process.stdout.read()
-        err_result = process.stderr.read()
+            if err_result is not None:
+                for line in err_result.split("\n"):
+                    if len(line) > 0:
+                        self.logger.debug("Happy [%s]:      %s" % (self.state_id, line))
 
-        if out_result is not None:
-            for line in out_result.split("\n"):
-                if len(line) > 0:
-                    self.logger.debug("Happy [%s]:      %s" % (self.state_id, line))
-
-        if err_result is not None:
-            for line in err_result.split("\n"):
-                if len(line) > 0:
-                    self.logger.debug("Happy [%s]:      %s" % (self.state_id, line))
-
-        return result, out_result, err_result
+            return result, out_result, err_result
 
     def CallAtHost(self, cmd, env=None, quiet=False, output='debuglog'):
         result, out_result, err_result = self.CallCmd(cmd, env, quiet, output)
@@ -545,7 +548,7 @@ class Driver:
         return self.CallAtNodeForOutput(network_id, cmd, env)
 
     def getRunAsRootPrefixList(self):
-        if "SUDO" in os.environ.keys():
+        if "SUDO" in list(os.environ.keys()):
             return [os.environ["SUDO"]]
         elif os.getuid() == 0:
             # We are already root
@@ -561,7 +564,7 @@ class Driver:
         if username is None:
             username = getpass.getuser()
 
-        if "SUDO" in os.environ.keys():
+        if "SUDO" in list(os.environ.keys()):
             return [os.environ["SUDO"], "-u", username]
         else:
             return ["sudo", "-u", username]
@@ -575,13 +578,13 @@ class Driver:
 
     def getShortIdToLongIdMap(self, state=None):
         state = self.getState(state)
-        if "identifiers" not in state.keys():
+        if "identifiers" not in list(state.keys()):
             state["identifiers"] = {}
         return state["identifiers"]
 
     def getLongIdToShortIdMap(self, state=None):
         state = self.getState(state)
-        if "netns" not in state.keys():
+        if "netns" not in list(state.keys()):
             state["netns"] = {}
         return state["netns"]
 
@@ -612,17 +615,17 @@ class Driver:
         return longToShortMap[identifier]
 
     def getStateId(self, state=None):
-        if state is not None and len(state.keys()) > 0:
-            state_key = state.keys()[0]
+        if state is not None and len(list(state.keys())) > 0:
+            state_key = list(state.keys())[0]
             return state_key
 
-        if self.state_environ in os.environ.keys():
+        if self.state_environ in list(os.environ.keys()):
             return os.environ[self.state_environ]
         else:
             return self.default_state
 
     def getHappyLogDir(self):
-        if self.happy_log_environ in os.environ.keys():
+        if self.happy_log_environ in list(os.environ.keys()):
             return os.environ[self.happy_log_environ]
         else:
             return self.default_happy_log_dir

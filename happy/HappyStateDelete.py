@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -22,6 +22,7 @@
 #       Implements HappyStateDelete class that deletes virtual network topology and its state.
 #
 
+from __future__ import absolute_import
 import json
 import os
 import sys
@@ -36,6 +37,7 @@ import happy.HappyLinkDelete
 import happy.HappyNode
 import happy.HappyInternet
 from happy.HappyHost import HappyHost
+from six.moves import input
 
 options = {}
 options["quiet"] = False
@@ -128,7 +130,7 @@ class HappyStateDelete(HappyHost):
             if self.force is True:
                 delete_it = True
             else:
-                reply = str(raw_input("Delete host namespace " + node_id + " (y/N): ")).lower().strip()
+                reply = str(input("Delete host namespace " + node_id + " (y/N): ")).lower().strip()
                 if reply[0] == 'y':
                     delete_it = True
 
@@ -151,7 +153,7 @@ class HappyStateDelete(HappyHost):
             if self.force is True:
                 delete_it = True
             else:
-                reply = str(raw_input("Delete host bridge " + network_id + " (y/N): ")).lower().strip()
+                reply = str(input("Delete host bridge " + network_id + " (y/N): ")).lower().strip()
                 if reply[0] == 'y':
                     delete_it = True
 
@@ -174,7 +176,7 @@ class HappyStateDelete(HappyHost):
             if self.force is True:
                 delete_it = True
             else:
-                reply = str(raw_input("Delete host link " + link_id + " (y/N): ")).lower().strip()
+                reply = str(input("Delete host link " + link_id + " (y/N): ")).lower().strip()
                 if len(reply) > 0 and reply[0] == 'y':
                     delete_it = True
 

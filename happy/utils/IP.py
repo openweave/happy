@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -23,7 +23,9 @@
 #       Provides general IP formatting tools.
 #
 
+from __future__ import absolute_import
 import socket
+from six.moves import range
 
 
 class IP:
@@ -224,13 +226,13 @@ class IP:
         if ":" in addr:
             if mask is None:
                 mask = 64
-            addr_list = addr.split(":")[:mask/16]
+            addr_list = addr.split(":")[:mask//16]
             return ":".join(addr_list)
 
         if "." in addr:
             if mask is None:
                 mask = 24
-            addr_list = addr.split(".")[:mask/8]
+            addr_list = addr.split(".")[:mask//8]
             return ".".join(addr_list)
 
     @staticmethod

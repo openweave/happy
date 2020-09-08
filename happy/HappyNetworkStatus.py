@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -22,6 +22,8 @@
 #       Implements HappyNetworkStatus class that shows virtual networks.
 #
 
+from __future__ import absolute_import
+from __future__ import print_function
 import json
 import os
 import sys
@@ -29,6 +31,7 @@ import sys
 from happy.ReturnMsg import ReturnMsg
 from happy.Utils import *
 from happy.HappyNetwork import HappyNetwork
+from six.moves import range
 
 options = {}
 options["quiet"] = False
@@ -77,26 +80,26 @@ class HappyNetworkStatus(HappyNetwork):
         pass
 
     def __print_all_networks(self):
-        print "{0: >15} {1: >12} {2: >7} {3: >44}".format("NETWORKS   Name", "Type", "State", "Prefixes")
+        print("{0: >15} {1: >12} {2: >7} {3: >44}".format("NETWORKS   Name", "Type", "State", "Prefixes"))
 
         for network_id in self.getNetworkIds():
-            print "{0: >15} {1: >12} {2: >7}".format(network_id,
+            print("{0: >15} {1: >12} {2: >7}".format(network_id,
                                                      self.getNetworkType(network_id),
-                                                     self.getNetworkState(network_id)),
+                                                     self.getNetworkState(network_id)), end=' ')
 
             prefixes = self.getNetworkPrefixes(network_id)
 
             if len(prefixes) == 0:
-                print
+                print()
                 continue
 
             for i in range(len(prefixes)):
                 if i > 0:
-                    print " " * 36,
+                    print(" " * 36, end=' ')
 
-                print " {0: >40}/{1: <3}".format(prefixes[i], self.getNetworkPrefixMask(prefixes[i], network_id))
+                print(" {0: >40}/{1: <3}".format(prefixes[i], self.getNetworkPrefixMask(prefixes[i], network_id)))
 
-            print
+            print()
 
     def run(self):
         self.__pre_check()
@@ -108,11 +111,11 @@ class HappyNetworkStatus(HappyNetwork):
         data_state = json.dumps(self.getNetwork(self.network_id), sort_keys=True, indent=4)
         emsg = "virtual network state: " + self.network_id
 
-        print emsg
+        print(emsg)
 
         self.logger.info("[%s] HappyNetworkStatus: %s" % (self.network_id, emsg))
 
-        print data_state
+        print(data_state)
 
         for line in data_state.split("\n"):
             if line is None or len(line) == 0:

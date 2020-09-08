@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2016-2017 Nest Labs, Inc.
@@ -21,6 +21,8 @@
 #    @file
 #       Implements TestrailResultOutput class that output the Weave standalone test result to json file for posting testrail
 #
+from __future__ import absolute_import
+from __future__ import print_function
 import json
 import os
 from happy.Utils import *
@@ -47,14 +49,14 @@ class TestrailResultOutput():
             emsg = "Missing output Weave test results for testrail."
             self.logger.error("[localhost] TestrailResultOutput: %s" % (emsg))
             if not self.quiet:
-                print hred(emsg)
+                print(hred(emsg))
             self.RaiseError(emsg)
 
         if not self.file_path:
             emsg = "Missing file name of testrail results."
             self.logger.error("[%s] TestrailResultOutput: %s" % (emsg))
             if not self.quiet:
-                print hred(emsg)
+                print(hred(emsg))
             self.RaiseError(emsg)
 
     def __results_output(self):
@@ -62,8 +64,8 @@ class TestrailResultOutput():
         try:
             json_data = json.dumps(self.output_data, sort_keys=True, indent=4)
         except Exception:
-            print "Failed to save testrail json file: %s" % \
-                (self.file_path)
+            print("Failed to save testrail json file: %s" % \
+                (self.file_path))
             self.logger.error("calls sys.exit(1)")
             self.exit()
 

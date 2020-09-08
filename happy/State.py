@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -23,10 +23,12 @@
 #       parts of state setup.
 #
 
+from __future__ import absolute_import
 import logging
 
 from happy.utils.IP import IP
 from happy.Driver import Driver
+import six
 
 
 class State(Driver):
@@ -65,25 +67,25 @@ class State(Driver):
 
     def getNetNS(self, state=None):
         state = self.getState(state)
-        if "netns" not in state.keys():
+        if "netns" not in list(state.keys()):
             state["netns"] = {}
         return state["netns"]
 
     def getNetNSIds(self, state=None):
         netns = self.getNetNS(state)
-        ids = netns.keys()
+        ids = list(netns.keys())
         ids.sort()
         return ids
 
     def getIdentifiers(self, state=None):
         state = self.getState(state)
-        if "identifiers" not in state.keys():
+        if "identifiers" not in list(state.keys()):
             state["identifiers"] = {}
         return state["identifiers"]
 
     def getIdentifierByNodeId(self, node_id, state=None):
         state = self.getState(state)
-        if "netns" not in state.keys():
+        if "netns" not in list(state.keys()):
             return None
         if node_id not in state["netns"]:
             return None
@@ -91,55 +93,55 @@ class State(Driver):
 
     def getNodes(self, state=None):
         state = self.getState(state)
-        if "node" not in state.keys():
+        if "node" not in list(state.keys()):
             state["node"] = {}
         return state["node"]
 
     def getNodeIds(self, state=None):
         state = self.getState(state)
-        if "node" not in state.keys():
+        if "node" not in list(state.keys()):
             state["node"] = {}
-        ids = state["node"].keys()
+        ids = list(state["node"].keys())
         ids.sort()
         return ids
 
     def getNetworks(self, state=None):
         state = self.getState(state)
-        if "network" not in state.keys():
+        if "network" not in list(state.keys()):
             state["network"] = {}
         return state["network"]
 
     def getNetworkIds(self, state=None):
         state = self.getState(state)
-        if "network" not in state.keys():
+        if "network" not in list(state.keys()):
             state["network"] = {}
-        ids = state["network"].keys()
+        ids = list(state["network"].keys())
         ids.sort()
         return ids
 
     def getLinks(self, state=None):
         state = self.getState(state)
-        if "link" not in state.keys():
+        if "link" not in list(state.keys()):
             state["link"] = {}
         return state["link"]
 
     def getLinkIds(self, state=None):
         state = self.getState(state)
-        if "link" not in state.keys():
+        if "link" not in list(state.keys()):
             state["link"] = {}
-        ids = state["link"].keys()
+        ids = list(state["link"].keys())
         ids.sort()
         return ids
 
     def getGlobal(self, state=None):
         state = self.getState(state)
-        if "global" not in state.keys():
+        if "global" not in list(state.keys()):
             state["global"] = {}
         return state["global"]
 
     def getGlobalIsp(self, state=None):
         state = self.getIspState(state)
-        if "global_isp" not in state.keys():
+        if "global_isp" not in list(state.keys()):
             state["global_isp"] = {}
         return state["global_isp"]
 
@@ -155,17 +157,17 @@ class State(Driver):
 
     def getNodeInterfaces(self, node_id=None, state=None):
         node_record = self.getNode(node_id, state)
-        if "interface" not in node_record.keys():
+        if "interface" not in list(node_record.keys()):
             return {}
         return node_record["interface"]
 
     def getNodeInterfaceIds(self, node_id=None, state=None):
         node_interfaces = self.getNodeInterfaces(node_id, state)
-        return node_interfaces.keys()
+        return list(node_interfaces.keys())
 
     def getNodeInterface(self, interface_id, node_id=None, state=None):
         node_interfaces = self.getNodeInterfaces(node_id, state)
-        if interface_id not in node_interfaces.keys():
+        if interface_id not in list(node_interfaces.keys()):
             return {}
         return node_interfaces[interface_id]
 
@@ -179,7 +181,7 @@ class State(Driver):
         node_interface = self.getNodeInterface(interface_id, node_id, state)
         if node_interface == {}:
             return []
-        return node_interface["ip"].keys()
+        return list(node_interface["ip"].keys())
 
     def getNodeAddrMatchingPrefix(self, node_id, interface, prefix):
         """Each interface may have multiple addresses, this function will get addresses based on interface and prefix.
@@ -279,7 +281,7 @@ class State(Driver):
 
     def getNodeRoutes(self, node_id=None, state=None):
         node_record = self.getNode(node_id, state)
-        if "route" not in node_record.keys():
+        if "route" not in list(node_record.keys()):
             return {}
         return node_record["route"]
 
@@ -307,11 +309,11 @@ class State(Driver):
 
     def getNodeRouteIds(self, node_id=None, state=None):
         node_routes = self.getNodeRoutes(node_id, state)
-        return node_routes.keys()
+        return list(node_routes.keys())
 
     def getNodeRoute(self, route_to, node_id=None, state=None):
         node_routes = self.getNodeRoutes(node_id, state)
-        if route_to not in node_routes.keys():
+        if route_to not in list(node_routes.keys()):
             return {}
         return node_routes[route_to]
 
@@ -319,7 +321,9 @@ class State(Driver):
         node_interfaces = self.getNodeInterfaces(node_id, state)
         links = []
         for interface_id in node_interfaces.keys():
-            links.append(node_interfaces[interface_id]["link"])
+            link = node_interfaces[interface_id]["link"]
+            if link is not None:
+                links.append(link)
         links.sort()
         return links
 
@@ -339,13 +343,13 @@ class State(Driver):
 
     def getNodeTmuxSessionIds(self, node_id=None, state=None):
         node_record = self.getNode(node_id, state)
-        if "tmux" not in node_record.keys():
+        if "tmux" not in list(node_record.keys()):
             return []
-        return node_record["tmux"].keys()
+        return list(node_record["tmux"].keys())
 
     def getNodeTmuxSession(self, session_id, node_id=None, state=None):
         node_record = self.getNode(node_id, state)
-        if "tmux" not in node_record.keys():
+        if "tmux" not in list(node_record.keys()):
             return {}
         if session_id not in self.getNodeTmuxSessionIds(node_id, state):
             return {}
@@ -355,66 +359,66 @@ class State(Driver):
         tmux_session = self.getNodeTmuxSession(session_id, node_id, state)
         if tmux_session == {}:
             return None
-        if "run_as_user" in tmux_session.keys():
+        if "run_as_user" in list(tmux_session.keys()):
             return tmux_session["run_as_user"]
         else:
             return None
 
     def getNodeProcesses(self, node_id=None, state=None):
         node_record = self.getNode(node_id, state)
-        if "process" not in node_record.keys():
+        if "process" not in list(node_record.keys()):
             return {}
         return node_record["process"]
 
     def getNodeProcessIds(self, node_id=None, state=None):
         node_processes = self.getNodeProcesses(node_id, state)
-        return node_processes.keys()
+        return list(node_processes.keys())
 
     def getNodeProcess(self, tag, node_id=None, state=None):
         node_processes = self.getNodeProcesses(node_id, state)
-        if tag not in node_processes.keys():
+        if tag not in list(node_processes.keys()):
             return {}
         return node_processes[tag]
 
     def getNodeType(self, node_id=None, state=None):
         node_record = self.getNode(node_id, state)
-        if "type" not in node_record.keys():
+        if "type" not in list(node_record.keys()):
             return None
         return node_record["type"]
 
     def getNodeProcessPID(self, tag=None, node_id=None, state=None):
         process_record = self.getNodeProcess(tag, node_id, state)
-        if "pid" not in process_record.keys():
+        if "pid" not in list(process_record.keys()):
             return None
         return process_record["pid"]
 
     def getNodeProcessCreateTime(self, tag=None, node_id=None, state=None):
         process_record = self.getNodeProcess(tag, node_id, state)
-        if "create_time" not in process_record.keys():
+        if "create_time" not in list(process_record.keys()):
             return None
         return process_record["create_time"]
 
     def getNodeProcessOutputFile(self, tag=None, node_id=None, state=None):
         process_record = self.getNodeProcess(tag, node_id, state)
-        if "out" not in process_record.keys():
+        if "out" not in list(process_record.keys()):
             return None
         return process_record["out"]
 
     def getNodeProcessStraceFile(self, tag=None, node_id=None, state=None):
         process_record = self.getNodeProcess(tag, node_id, state)
-        if "strace" not in process_record.keys():
+        if "strace" not in list(process_record.keys()):
             return None
         return process_record["strace"]
 
     def getNodeProcessCommand(self, tag=None, node_id=None, state=None):
         process_record = self.getNodeProcess(tag, node_id, state)
-        if "command" not in process_record.keys():
+        if "command" not in list(process_record.keys()):
             return None
         return process_record["command"]
 
     def getNodeNetNS(self, node_id=None, state=None):
         node_record = self.getNode(node_id, state)
-        if "netns" not in node_record.keys():
+        if "netns" not in list(node_record.keys()):
             return None
         return node_record["netns"]
 
@@ -430,7 +434,7 @@ class State(Driver):
 
     def getNetworkNetNS(self, network_id=None, state=None):
         network_record = self.getNetwork(network_id, state)
-        if "netns" not in network_record.keys():
+        if "netns" not in list(network_record.keys()):
             return None
         return network_record["netns"]
 
@@ -491,69 +495,69 @@ class State(Driver):
 
     def getNetworkLinks(self, network_id=None, state=None):
         network_record = self.getNetwork(network_id, state)
-        if "interface" not in network_record.keys():
+        if "interface" not in list(network_record.keys()):
             return {}
         return network_record["interface"]
 
     def getNetworkLinkIds(self, network_id=None, state=None):
         network_links = self.getNetworkLinks(network_id, state)
-        ids = network_links.keys()
+        ids = list(network_links.keys())
         ids.sort()
         return ids
 
     def getNetworkLink(self, interface_id, network_id=None, state=None):
         network_links = self.getNetworkLinks(network_id, state)
-        if interface_id not in network_links.keys():
+        if interface_id not in list(network_links.keys()):
             return {}
         return network_links[interface_id]
 
     def getNetworkType(self, network_id=None, state=None):
         network_record = self.getNetwork(network_id, state)
-        if "type" not in network_record.keys():
+        if "type" not in list(network_record.keys()):
             return None
         return network_record["type"]
 
     def getNetworkState(self, network_id=None, state=None):
         network_record = self.getNetwork(network_id, state)
-        if "state" not in network_record.keys():
+        if "state" not in list(network_record.keys()):
             return None
         return network_record["state"]
 
     def getNetworkPrefixRecords(self, network_id=None, state=None):
         network_record = self.getNetwork(network_id, state)
-        if "prefix" not in network_record.keys():
+        if "prefix" not in list(network_record.keys()):
             return {}
         return network_record["prefix"]
 
     def getNetworkPrefixes(self, network_id=None, state=None):
         network_record = self.getNetwork(network_id, state)
-        if "prefix" not in network_record.keys():
+        if "prefix" not in list(network_record.keys()):
             return []
-        return network_record["prefix"].keys()
+        return list(network_record["prefix"].keys())
 
     def getNetworkPrefixMask(self, prefix, network_id=None, state=None):
         network_prefixes = self.getNetworkPrefixRecords(network_id, state)
         if prefix not in self.getNetworkPrefixes(network_id, state):
             return None
-        if "mask" not in network_prefixes[prefix].keys():
+        if "mask" not in list(network_prefixes[prefix].keys()):
             return None
         return network_prefixes[prefix]["mask"]
 
     def getNetworkRoutes(self, network_id=None, state=None):
         network_record = self.getNetwork(network_id, state)
-        if "route" not in network_record.keys():
+        if "route" not in list(network_record.keys()):
             return {}
         return network_record["route"]
 
     def getNetworkRouteIds(self, network_id=None, state=None):
         network_record = self.getNetwork(network_id, state)
-        if "route" not in network_record.keys():
+        if "route" not in list(network_record.keys()):
             return []
-        return network_record["route"].keys()
+        return list(network_record["route"].keys())
 
     def getNetworkRoute(self, route_to, network_id=None, state=None):
         network_routes = self.getNetworkRoutes(network_id, state)
-        if route_to not in network_routes.keys():
+        if route_to not in list(network_routes.keys()):
             return {}
         return network_routes[route_to]
 
@@ -569,109 +573,109 @@ class State(Driver):
 
     def getLinkNode(self, link_id=None, state=None):
         link = self.getLink(link_id, state)
-        if "node" not in link.keys():
+        if "node" not in list(link.keys()):
             return None
         return link["node"]
 
     def getLinkNetwork(self, link_id=None, state=None):
         link = self.getLink(link_id, state)
-        if "network" not in link.keys():
+        if "network" not in list(link.keys()):
             return None
         return link["network"]
 
     def getLinkType(self, link_id=None, state=None):
         link = self.getLink(link_id, state)
-        if "type" not in link.keys():
+        if "type" not in list(link.keys()):
             return None
         return link["type"]
 
     def getLinkNumber(self, link_id=None, state=None):
         link = self.getLink(link_id, state)
-        if "number" not in link.keys():
+        if "number" not in list(link.keys()):
             return None
         return link["number"]
 
     def getLinkTap(self, link_id=None, state=None):
         link = self.getLink(link_id, state)
-        if "tap" not in link.keys():
+        if "tap" not in list(link.keys()):
             return None
         return link["tap"]
 
     def getLinkNodeEnd(self, link_id=None, state=None):
         link = self.getLink(link_id, state)
-        if "node_end" not in link.keys():
+        if "node_end" not in list(link.keys()):
             return None
         return link["node_end"]
 
     def getLinkNetworkEnd(self, link_id=None, state=None):
         link = self.getLink(link_id, state)
-        if "network_end" not in link.keys():
+        if "network_end" not in list(link.keys()):
             return None
         return link["network_end"]
 
     def getInternet(self, state=None):
         global_record = self.getGlobal(state)
-        if "internet" not in global_record.keys():
+        if "internet" not in list(global_record.keys()):
             return {}
         return global_record["internet"]
 
     def getIsp(self, state=None):
         global_isp_record = self.getGlobalIsp(state)
-        if "isp" not in global_isp_record.keys():
+        if "isp" not in list(global_isp_record.keys()):
             return {}
         return global_isp_record["isp"]
 
     def getDNS(self, state=None):
         global_record = self.getGlobal(state)
-        if "DNS" not in global_record.keys():
+        if "DNS" not in list(global_record.keys()):
             return None
         return global_record["DNS"]
 
     def getInternetHostLinkId(self, isp_id, state=None):
         internet_record = self.getInternet(state)
-        if isp_id in internet_record.keys() and "host_link" not in internet_record[isp_id]:
+        if isp_id in list(internet_record.keys()) and "host_link" not in internet_record[isp_id]:
             return None
         return internet_record[isp_id]["host_link"]
 
     def getInternetNodeLinkId(self, isp_id, state=None):
         internet_record = self.getInternet(state)
-        if isp_id in internet_record.keys() and "node_link" not in internet_record[isp_id]:
+        if isp_id in list(internet_record.keys()) and "node_link" not in internet_record[isp_id]:
             return None
         return internet_record[isp_id]["node_link"]
 
     def getInternetNodeId(self, isp_id, state=None):
         internet_record = self.getInternet(state)
-        if isp_id in internet_record.keys() and "node_id" not in internet_record[isp_id]:
+        if isp_id in list(internet_record.keys()) and "node_id" not in internet_record[isp_id]:
             return None
         return internet_record[isp_id]["node_id"]
 
     def getInternetIspAddr(self, isp_id, state=None):
         internet_record = self.getInternet(state)
-        if isp_id in internet_record.keys() and "isp_addr" not in internet_record[isp_id]:
+        if isp_id in list(internet_record.keys()) and "isp_addr" not in internet_record[isp_id]:
             return None
         return internet_record[isp_id]["isp_addr"]
 
     def getInternetIspIndex(self, isp_id, state=None):
         internet_record = self.getInternet(state)
-        if isp_id in internet_record.keys() and "isp_index" not in internet_record[isp_id]:
+        if isp_id in list(internet_record.keys()) and "isp_index" not in internet_record[isp_id]:
             return None
         return internet_record[isp_id]["isp_index"]
 
     def getIspAvailable(self, state=None):
         isp_record = self.getIsp(state)
-        available_ip_pool = filter(lambda s: not s["occupy"], isp_record)
+        available_ip_pool = [s for s in isp_record if not s["occupy"]]
         return available_ip_pool
 
     def getIspAvailableIndex(self, state=None):
         isp_record = self.getIsp(state)
-        available_ip_pool = filter(lambda s: not s["occupy"], isp_record)
+        available_ip_pool = [s for s in isp_record if not s["occupy"]]
         return int(available_ip_pool[0]['isp_index']) - 1
 
     def getIspAddr(self, index, state=None):
         isp_record = self.getIsp(state)
         if index >= len(isp_record) or index < 0:
             return None
-        if "isp_addr" not in isp_record[index].keys():
+        if "isp_addr" not in list(isp_record[index].keys()):
             return None
         return isp_record[index]["isp_addr"]
 
@@ -679,7 +683,7 @@ class State(Driver):
         isp_record = self.getIsp(state)
         if index > len(isp_record) or index < 0:
             return None
-        if "isp_host_end" not in isp_record[index].keys():
+        if "isp_host_end" not in list(isp_record[index].keys()):
             return None
         return isp_record[index]["isp_host_end"]
 
@@ -687,7 +691,7 @@ class State(Driver):
         isp_record = self.getIsp(state)
         if index >= len(isp_record) or index < 0:
             return None
-        if "isp_node_end" not in isp_record[index].keys():
+        if "isp_node_end" not in list(isp_record[index].keys()):
             return None
         return isp_record[index]["isp_node_end"]
 
@@ -695,13 +699,13 @@ class State(Driver):
         isp_record = self.getIsp(state)
         if index >= len(isp_record) or index < 0:
             return None
-        if "isp_index" not in isp_record[index].keys():
+        if "isp_index" not in list(isp_record[index].keys()):
             return None
         return isp_record[index]["isp_index"]
 
     def setNodeProcess(self, process, tag, node_id=None, state=None):
         node_record = self.getNode(node_id, state)
-        if "process" not in node_record.keys():
+        if "process" not in list(node_record.keys()):
             node_record["process"] = {}
         node_record["process"][tag] = process
 
@@ -713,7 +717,7 @@ class State(Driver):
     def setLinkNetworkNodeHw(self, link_id, network_id, node_id, hw_addr, state=None):
         links = self.getLinks(state)
         if links is not None:
-            if link_id not in links.keys():
+            if link_id not in list(links.keys()):
                 links[link_id] = {}
             links[link_id]["network"] = network_id
             links[link_id]["node"] = node_id
@@ -732,13 +736,13 @@ class State(Driver):
     def setNodeIpAddress(self, node_id, interface_id, ip_address, record, state=None):
         node_interface = self.getNodeInterface(interface_id, node_id, state)
         if node_interface is not None:
-            if "ip" not in node_interface.keys():
+            if "ip" not in list(node_interface.keys()):
                 node_interface["ip"] = {}
             node_interface["ip"][ip_address] = record
 
     def setNodeTmux(self, node_id, session_id, record, state=None):
         node_record = self.getNode(node_id, state)
-        if "tmux" not in node_record.keys():
+        if "tmux" not in list(node_record.keys()):
             node_record["tmux"] = {}
         node_record["tmux"][session_id] = record
 
@@ -750,11 +754,11 @@ class State(Driver):
     def setNodeRoute(self, node_id, to, record, state=None):
         node_record = self.getNode(node_id, state)
         if node_record is not None:
-            if "route" not in node_record.keys():
+            if "route" not in list(node_record.keys()):
                 node_record["route"] = {}
 
-            if ("via" in record.keys() and IP.isIpv6(record["via"])) or \
-               ("prefix" in record.keys() and IP.isIpv6(record["prefix"])):
+            if ("via" in list(record.keys()) and IP.isIpv6(record["via"])) or \
+               ("prefix" in list(record.keys()) and IP.isIpv6(record["prefix"])):
                 to = to + "_v6"
             else:
                 to = to + "_v4"
@@ -774,11 +778,11 @@ class State(Driver):
     def setNetworkRoute(self, network_id, to, record, state=None):
         network_record = self.getNetwork(network_id, state)
         if network_record is not None:
-            if "route" not in network_record.keys():
+            if "route" not in list(network_record.keys()):
                 network_record["route"] = {}
 
-            if ("via" in record.keys() and IP.isIpv6(record["via"])) or \
-               ("prefix" in record.keys() and IP.isIpv6(record["prefix"])):
+            if ("via" in list(record.keys()) and IP.isIpv6(record["via"])) or \
+               ("prefix" in list(record.keys()) and IP.isIpv6(record["prefix"])):
                 to = to + "_v6"
             else:
                 to = to + "_v4"
@@ -788,7 +792,7 @@ class State(Driver):
     def setNetworkPrefix(self, network_id, prefix, record, state=None):
         network_record = self.getNetwork(network_id, state)
         if network_record is not None:
-            if "prefix" not in network_record.keys():
+            if "prefix" not in list(network_record.keys()):
                 network_record["prefix"] = {}
             network_record["prefix"][prefix] = record
 
@@ -843,14 +847,14 @@ class State(Driver):
 
     def removeNodeTmux(self, node_id, session_id, state=None):
         node_record = self.getNode(node_id, state)
-        if "tmux" in node_record.keys():
-            if session_id in node_record["tmux"].keys():
+        if "tmux" in list(node_record.keys()):
+            if session_id in list(node_record["tmux"].keys()):
                 del node_record["tmux"][session_id]
 
     def removeNodeRoute(self, node_id, to, state=None):
         node_record = self.getNode(node_id, state)
-        if "route" in node_record.keys():
-            if to in node_record["route"].keys():
+        if "route" in list(node_record.keys()):
+            if to in list(node_record["route"].keys()):
                 del node_record["route"][to]
 
     def removeNodeInterfaceAddress(self, node_id, interface_id, ip_address, state=None):
@@ -865,31 +869,31 @@ class State(Driver):
 
     def removeNetworkRoute(self, network_id, to, state=None):
         network_record = self.getNetwork(network_id, state)
-        if "route" in network_record.keys():
-            if to in network_record["route"].keys():
+        if "route" in list(network_record.keys()):
+            if to in list(network_record["route"].keys()):
                 del network_record["route"][to]
 
     def removeNetworkPrefix(self, network_id, prefix, state=None):
         network_record = self.getNetwork(network_id, state)
-        if "prefix" in network_record.keys():
-            if prefix in network_record["prefix"].keys():
+        if "prefix" in list(network_record.keys()):
+            if prefix in list(network_record["prefix"].keys()):
                 del network_record["prefix"][prefix]
 
     def removeGlobalInternet(self, isp_id, state=None):
         global_record = self.getGlobal(state)
-        if "internet" in global_record.keys() and isp_id in global_record['internet'].keys():
+        if "internet" in list(global_record.keys()) and isp_id in list(global_record['internet'].keys()):
             del global_record["internet"][isp_id]
         if not bool(global_record['internet']):
             del global_record["internet"]
 
     def removeGlobalIsp(self, state=None):
         global_record = self.getGlobalIsp(state)
-        if "isp" in global_record.keys():
+        if "isp" in list(global_record.keys()):
             del global_record["isp"]
 
     def removeGlobalDNS(self, state=None):
         global_record = self.getGlobal(state)
-        if "DNS" in global_record.keys():
+        if "DNS" in list(global_record.keys()):
             del global_record["DNS"]
 
     def getExtensionState(self, state=None):
@@ -899,7 +903,7 @@ class State(Driver):
         """
         knownStateKeys = set(['identifiers', 'link', 'node', 'netns', 'network'])
         state = self.getState(state)
-        filteredState = dict([i for i in state.iteritems() if i[0] not in knownStateKeys])
+        filteredState = dict([i for i in six.iteritems(state) if i[0] not in knownStateKeys])
         return filteredState
 
     def getNodeInfo(self, node, state=None, happy_only=False):
@@ -912,7 +916,7 @@ class State(Driver):
 
         # get extension state including weave
         if not happy_only:
-            for i in self.getExtensionState(state).iteritems():
+            for i in six.iteritems(self.getExtensionState(state)):
                 extState = self.getNodes(i[1])
                 if extState and node in extState:
                     node_info[i[0]] = extState[node]

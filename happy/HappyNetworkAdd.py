@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -25,6 +25,7 @@
 #       bridge that acts like a hub.
 #
 
+from __future__ import absolute_import
 import os
 import sys
 
@@ -102,7 +103,7 @@ class HappyNetworkAdd(HappyNetwork):
             self.exit()
 
         # Check if the type of the new network is given
-        if self.type.lower() not in self.network_type.keys():
+        if self.type.lower() not in list(self.network_type.keys()):
             emsg = "Invalid virtual network type: " + self.type + "."
             self.logger.error("[%s] HappyNetworkAdd: %s" % (self.network_id, emsg))
             self.exit()

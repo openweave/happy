@@ -22,7 +22,7 @@ DPKG               ?= $(shell which dpkg 2> /dev/null)
 MAKE               ?= make
 PEP8_LINT          ?= pep8
 PEP8_LINT_ARGS     ?= --max-line-length=132
-PYTHON             ?= python
+PYTHON             ?= python3
 PYTHON_VERSION     ?= $(shell $(PYTHON) -c "import sys; sys.stdout.write(sys.version[:3])")
 SUDO               ?= sudo
 
@@ -32,9 +32,10 @@ SUDO               ?= sudo
 DPKG_PREREQUISITES := \
     bridge-utils      \
     net-tools         \
-    python-lockfile   \
-    python-psutil     \
-    python-setuptools \
+    python3-lockfile   \
+    python3-pip \
+    python3-psutil     \
+    python3-setuptools \
     $(NULL)
 
 # check-dpkg-prequisite <package>

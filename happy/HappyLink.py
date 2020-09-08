@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2015-2017 Nest Labs, Inc.
@@ -24,6 +24,7 @@
 #       Virtual Link-specific actions inherit from this class.
 #
 
+from __future__ import absolute_import
 import os
 import sys
 

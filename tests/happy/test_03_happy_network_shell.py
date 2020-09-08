@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #    Copyright (c) 2016-2017 Nest Labs, Inc.
@@ -22,6 +22,7 @@
 #       Tests happy for creating, deleting, and listing networks.
 #
 
+from __future__ import absolute_import
 import pexpect
 import os
 import unittest
