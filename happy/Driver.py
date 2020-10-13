@@ -140,6 +140,9 @@ class Driver:
         self.log_conf_file = self.happy_path + "/" + log_config
         self.main_conf_file = self.happy_path + "/" + main_config
 
+        if "HAPPY_MAIN_CONFIG_FILE" in os.environ.keys():
+            self.main_conf_file = os.environ["HAPPY_MAIN_CONFIG_FILE"]
+
         self.__configure()
         self.readConfiguration()
         self.configHappyLogPath()
