@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 #
-#    Copyright (c) 2015-2017 Nest Labs, Inc.
+#    Copyright (c) 2021 Google LLC.
 #    All rights reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License");
