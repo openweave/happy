@@ -15,7 +15,7 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.10
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -29,6 +29,11 @@ jobs:
     # Runs a set of commands using the runners shell
     - name: Run a multi-line script
       run: |
-        sudo apt-get upgrade
-        sudo apt-get update
-        ping6 www.google.com
+        git clone https://github.com/bluez/bluez.git
+        sudo apt-get -y install  autotools-dev automake libusb-dev libdbus-1-dev libglib2.0-dev libudev-dev libical-dev libreadline-dev libdbus-glib-1-dev libtool |
+        cd bluez |
+        ./bootstrap |
+        ./configure  --prefix=/usr --mandir=/usr/share/man --sysconfdir=/etc --localstatedir=/var --enable-experimental --with-systemdsystemunitdir=/lib/systemd/system --with-systemduserunitdir=/usr/lib/systemd --enable-deprecated --enable-testing --enable-tools |
+        make |
+        sudo make install 
+
