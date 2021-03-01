@@ -814,6 +814,14 @@ class State(Driver):
         global_record = self.getGlobal(state)
         global_record["DNS"] = record
 
+    def renameNode(self, node_id, new_node_id, state=None):
+        nodes = self.getNodes(state)
+        if nodes is not None:
+            node_record = self.getNode(node_id, state)
+            if node_record is not None:
+                nodes[new_node_id] = node_record
+                self.removeNode(node_id)
+
     def removeLink(self, link_id, state=None):
         links = self.getLinks(state)
         if link_id in self.getLinkIds(state):
@@ -955,6 +963,3 @@ class State(Driver):
                 return True
         else:
             return False
-
-
-        
