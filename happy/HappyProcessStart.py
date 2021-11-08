@@ -163,6 +163,15 @@ class HappyProcessStart(HappyNode, HappyProcess):
         tail.close()
         return
 
+    def list_files(self, startpath):
+        for root, dirs, files in os.walk(startpath):
+            level = root.replace(startpath, '').count(os.sep)
+            indent = ' ' * 4 * (level)
+            self.logger.debug('{}{}/'.format(indent, os.path.basename(root)))
+            subindent = ' ' * 4 * (level + 1)
+            for f in files:
+                self.logger.debug('{}{}'.format(subindent, f))
+
     def __start_daemon(self):
         cmd = self.command
 
@@ -336,6 +345,14 @@ class HappyProcessStart(HappyNode, HappyProcess):
                 cmd_list = cmd_list_prefix + env_vars_list + cmd.split()
 
             self.logger.debug("[%s] HappyProcessStart: executing command list %s" % (self.node_id, cmd_list))
+
+            self.list_files("/__w/connectedhomeip/connectedhomeip/out/")
+
+            valR =  os.access(cmd_list[8], os.R_OK)
+            self.logger.debug("[%s] HappyProcessStart file R: executing command!!!!!!! %s !!!! %s" % (self.node_id, cmd_list[8], valR))
+            valE =  os.access(cmd_list[8], os.X_OK)
+            self.logger.debug("[%s] HappyProcessStart file X: executing command!!!!!!! %s !!!! %s" % (self.node_id, cmd_list[8], valE))
+
             popen = subprocess.Popen(cmd_list, stdin=subprocess.PIPE, stdout=self.fout)
             self.child_pid = popen.pid
             emsg = "running daemon %s (PID %d)" % (self.tag, self.child_pid)
