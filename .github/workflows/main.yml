@@ -44,7 +44,6 @@ jobs:
           wget http://www.kernel.org/pub/linux/bluetooth/bluez-5.50.tar.xz
           tar xf bluez-5.50.tar.xz
           cd bluez-5.50
-          cd bluez
           ./bootstrap
           ./configure  --prefix=/usr --mandir=/usr/share/man --sysconfdir=/etc --localstatedir=/var --enable-experimental --with-systemdsystemunitdir=/lib/systemd/system --with-systemduserunitdir=/usr/lib/systemd --enable-deprecated --enable-testing --enable-tools |
           make
