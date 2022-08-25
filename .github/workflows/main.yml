@@ -41,9 +41,9 @@ jobs:
           sudo apt-get upgrade
           sudo apt-get update
           sudo apt-get -y install bridge-utils autotools-dev automake libusb-dev libdbus-1-dev libglib2.0-dev libudev-dev libical-dev libreadline-dev libdbus-glib-1-dev libtool |
-          ls -al
-          cd ..
-          ls -al
+          wget http://www.kernel.org/pub/linux/bluetooth/bluez-5.50.tar.xz
+          tar xf bluez-5.50.tar.xz
+          cd bluez-5.50
           cd bluez
           ./bootstrap
           ./configure  --prefix=/usr --mandir=/usr/share/man --sysconfdir=/etc --localstatedir=/var --enable-experimental --with-systemdsystemunitdir=/lib/systemd/system --with-systemduserunitdir=/usr/lib/systemd --enable-deprecated --enable-testing --enable-tools |
