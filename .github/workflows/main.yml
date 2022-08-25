@@ -22,8 +22,10 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+        with:
+          name: github.com/bluez/bluez.git
+          ref: refs/heads/master
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
@@ -38,7 +40,6 @@ jobs:
         run: |
           sudo apt-get upgrade
           sudo apt-get update
-          git clone https://github.com/bluez/bluez.git
           sudo apt-get -y install bridge-utils autotools-dev automake libusb-dev libdbus-1-dev libglib2.0-dev libudev-dev libical-dev libreadline-dev libdbus-glib-1-dev libtool |
           cd bluez
           ./bootstrap
