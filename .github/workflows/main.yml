@@ -34,21 +34,21 @@ jobs:
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
-    - name: Run a multi-line script
-      run: |
-        sudo apt-get upgrade
-        sudo apt-get update
-        git clone https://github.com/bluez/bluez.git
-        sudo apt-get update
-        sudo apt-get -y install bridge-utils autotools-dev automake libusb-dev libdbus-1-dev libglib2.0-dev libudev-dev libical-dev libreadline-dev libdbus-glib-1-dev libtool |
-        cd bluez
-        ./bootstrap
-        ./configure  --prefix=/usr --mandir=/usr/share/man --sysconfdir=/etc --localstatedir=/var --enable-experimental --with-systemdsystemunitdir=/lib/systemd/system --with-systemduserunitdir=/usr/lib/systemd --enable-deprecated --enable-testing --enable-tools |
-        make
-        sudo make install 
-        mkdir -p /etc/bluetooth/
-        sudo cp src/main.conf /etc/bluetooth/main.conf
-        sudo cp src/bluetooth.conf /etc/dbus-1/system.d/bluetooth.conf
-        sudo cp src/bluetooth.conf /usr/share/dbus-1/system.d/bluetooth.conf
-        sudo src/bluetoothd --experimental --debug &
-        sudo emulator/btvirt -l 2 &
+      - name: Run a multi-line script
+        run: |
+          sudo apt-get upgrade
+          sudo apt-get update
+          git clone https://github.com/bluez/bluez.git
+          sudo apt-get update
+          sudo apt-get -y install bridge-utils autotools-dev automake libusb-dev libdbus-1-dev libglib2.0-dev libudev-dev libical-dev libreadline-dev libdbus-glib-1-dev libtool |
+          cd bluez
+          ./bootstrap
+          ./configure  --prefix=/usr --mandir=/usr/share/man --sysconfdir=/etc --localstatedir=/var --enable-experimental --with-systemdsystemunitdir=/lib/systemd/system --with-systemduserunitdir=/usr/lib/systemd --enable-deprecated --enable-testing --enable-tools |
+          make
+          sudo make install 
+          mkdir -p /etc/bluetooth/
+          sudo cp src/main.conf /etc/bluetooth/main.conf
+          sudo cp src/bluetooth.conf /etc/dbus-1/system.d/bluetooth.conf
+          sudo cp src/bluetooth.conf /usr/share/dbus-1/system.d/bluetooth.conf
+          sudo src/bluetoothd --experimental --debug &
+          sudo emulator/btvirt -l 2 &
