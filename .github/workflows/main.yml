@@ -39,7 +39,6 @@ jobs:
           sudo apt-get upgrade
           sudo apt-get update
           git clone https://github.com/bluez/bluez.git
-          sudo apt-get update
           sudo apt-get -y install bridge-utils autotools-dev automake libusb-dev libdbus-1-dev libglib2.0-dev libudev-dev libical-dev libreadline-dev libdbus-glib-1-dev libtool |
           cd bluez
           ./bootstrap
