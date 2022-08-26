@@ -34,8 +34,6 @@ jobs:
           echo test, and deploy your project.
       - name: Run a multi-line script
         run: |
-          sudo modprobe mac80211_hwsim
-          lsmod|grep  hw
           sudo modprobe hci_vhci
           lsmod | grep hci
           
