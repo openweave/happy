@@ -45,7 +45,6 @@ jobs:
           tar xf bluez-5.50.tar.xz
           cd bluez-5.50
           ls -al
-          ./bootstrap
           ./configure  --prefix=/usr --mandir=/usr/share/man --sysconfdir=/etc --localstatedir=/var --enable-experimental --with-systemdsystemunitdir=/lib/systemd/system --with-systemduserunitdir=/usr/lib/systemd --enable-deprecated --enable-testing --enable-tools |
           make
           sudo make install 
