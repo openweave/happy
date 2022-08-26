@@ -22,11 +22,7 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: actions/checkout@v3
-        with:
-          name: github.com/bluez/bluez.git
-          ref: refs/heads/master
-
+      - uses: actions/checkout@master
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: echo Hello, world!
@@ -38,9 +34,6 @@ jobs:
           echo test, and deploy your project.
       - name: Run a multi-line script
         run: |
-          sudo apt-get upgrade
-          sudo apt-get update
-          sudo apt-get -y install bridge-utils autotools-dev automake libusb-dev libdbus-1-dev libglib2.0-dev libudev-dev libical-dev libreadline-dev libdbus-glib-1-dev libtool |
           sudo modprobe mac80211_hwsim
           lsmod|grep  hw
           sudo modprobe hci_vhci
